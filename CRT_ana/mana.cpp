@@ -37,6 +37,6 @@ void mana(){
     
   }
 
-  md->Draw("crt_nHitAllTot");
+  md->Draw("crt_charge");
 
 }
