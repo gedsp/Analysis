@@ -17,6 +17,7 @@ void mana(){
   
   midas_data M(md);
 
+//  hnseg = new TH1F("hnseg","Number of segments for selected tracks",4096,0,8192);
   if (M.fChain == 0) return;
 
   Long64_t nentries = M.fChain->GetEntriesFast();
@@ -32,8 +33,10 @@ void mana(){
     nb = M.fChain->GetEntry(jentry);   nbytes += nb;
   // if (Cut(ientry) < 0) continue;
 
+    
+    
   }
 
-
+  md->Draw("crt_nHitTot");
 
 }
