@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Thu Sep  5 16:18:59 2019 by ROOT version 6.18/00
+// Thu Sep  5 17:02:53 2019 by ROOT version 6.18/00
 // from TTree midas_data/midas_data
 // found on file: /eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001998_reprocessed.root
 //////////////////////////////////////////////////////////
