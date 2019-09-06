@@ -264,11 +264,11 @@ void midas_data::Init(TTree *tree)
    fChain->SetBranchAddress("crt_point_wall_fc", crt_point_wall_fc, &b_crt_point_wall_fc);
    fChain->SetBranchAddress("crt_point_wall_fc_p", crt_point_wall_fc_p, &b_crt_point_wall_fc_p);
    fChain->SetBranchAddress("crt_point_wall_fc_m", crt_point_wall_fc_m, &b_crt_point_wall_fc_m);
-   fChain->SetBranchAddress("adc_value_0", adc_value_0, &b_adc_value_0);
-   fChain->SetBranchAddress("adc_value_1", adc_value_1, &b_adc_value_1);
-   fChain->SetBranchAddress("adc_value_2", adc_value_2, &b_adc_value_2);
-   fChain->SetBranchAddress("adc_value_3", adc_value_3, &b_adc_value_3);
-   fChain->SetBranchAddress("adc_value_4", adc_value_4, &b_adc_value_4);
+//   fChain->SetBranchAddress("adc_value_0", adc_value_0, &b_adc_value_0);
+//   fChain->SetBranchAddress("adc_value_1", adc_value_1, &b_adc_value_1);
+//  fChain->SetBranchAddress("adc_value_2", adc_value_2, &b_adc_value_2);
+//   fChain->SetBranchAddress("adc_value_3", adc_value_3, &b_adc_value_3);
+//   fChain->SetBranchAddress("adc_value_4", adc_value_4, &b_adc_value_4);
    Notify();
 }
 
