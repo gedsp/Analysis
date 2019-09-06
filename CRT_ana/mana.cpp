@@ -13,7 +13,7 @@
 void mana(){
 
   TChain * md = new TChain("midas_data");
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
   
   midas_data M(md);
 
