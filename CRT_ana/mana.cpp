@@ -41,6 +41,7 @@ void mana(){
     
     
   }
+  
 TCanvas * c =new TCanvas();
 c->Divide(2,2);
 c->cd(1);
@@ -52,9 +53,15 @@ md->Draw("crt_nHitTot");
 c->cd(4);
 md->Draw("crt_nHitSatTot");
 
+  c->Print("Crt_CH_Histtot.pdf")
+  
+ // for (int i=0; i<4; i++) {
+    TCanvas * c2 = new TCanvas();
+   // c2->Divide(8,4);
+ //   TH1F * h
+ // }
 
-TCanvas * c2 = new TCanvas();
-c2->Divide(8,4);
+  md->Draw("crt_adc");
 
 
 
