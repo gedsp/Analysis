@@ -53,7 +53,7 @@ md->Draw("crt_nHitTot");
 c->cd(4);
 md->Draw("crt_nHitSatTot");
 
-  c->Print("Crt_CH_Histtot.pdf")
+  c->Print("Crt_CH_Histtot.pdf");
   
  // for (int i=0; i<4; i++) {
     TCanvas * c2 = new TCanvas();
