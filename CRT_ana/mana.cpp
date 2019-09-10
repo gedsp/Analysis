@@ -41,7 +41,25 @@ void mana(){
     
     
   }
-
+TCanvas * c =new TCanvas();
+c->Divide(2,2);
+c->cd(1);
   md->Draw("crt_charge");
+c->cd(2);
+md->Draw("crt_nHitAllTot");
+c->cd(3);
+md->Draw("crt_nHitTot");
+c->cd(4);
+md->Draw("crt_nHitSatTot");
+
+
+TCanvas * c2 = new TCanvas();
+c2->Divide(8,4);
+
+
+
+
+
+
 
 }
