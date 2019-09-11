@@ -15,7 +15,7 @@ void mana(){
   TChain * md = new TChain("midas_data");
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
   
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001320_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
 //  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00002050_reprocessed.root");
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00002177_reprocessed.root");
   
