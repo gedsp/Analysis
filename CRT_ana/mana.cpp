@@ -51,10 +51,20 @@ void mana(){
 
     
       for (int j=0; j<32; j++) {
+        
+        
         plano0->Fill(crt_adc[0][j]);
         plano1->Fill(crt_adc[1][j]);
         plano2->Fill(crt_adc[2][j]);
         plano3->Fill(crt_adc[3][j]);
+        
+        
+        if (crt_adc[0][j]>3500){
+          
+          cout << "value " << crt_adc[0][j] << endl;
+        }
+          
+          
       }
     
     
