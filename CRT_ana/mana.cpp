@@ -42,10 +42,10 @@ void mana(){
   
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
  
-   fChain->SetBranchAddress("crt_adc", crt_adc, &b_crt_adc);
+   md->SetBranchAddress("crt_adc", crt_adc, &b_crt_adc);
 
     
-    if (ientry < 0) break;
+ //   if (ientry < 0) break;
   
     nb = md->GetEntry(jentry);   nbytes += nb;
 
