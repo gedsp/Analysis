@@ -1,14 +1,14 @@
-#define midas_data_cxx
-#include "midas_data.h"
+#define Midas_TREE_cxx
+#include "Midas_TREE.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 
-void midas_data::Loop()
+void Midas_TREE::Loop()
 {
 //   In a ROOT session, you can do:
-//      root> .L midas_data.C
-//      root> midas_data t
+//      root> .L Midas_TREE.C
+//      root> Midas_TREE t
 //      root> t.GetEntry(12); // Fill t data members with entry number 12
 //      root> t.Show();       // Show values of entry 12
 //      root> t.Show(16);     // Read and show values of entry 16

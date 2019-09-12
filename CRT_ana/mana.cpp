@@ -6,7 +6,7 @@
 //
 
 #include <stdio.h>
-#include "midas_data.h"
+#include "Midas_TREE.h"
 
 
 
@@ -20,7 +20,7 @@ void mana(){
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00002177_reprocessed.root");
   
   
-  midas_data M(md);
+  Midas_TREE M(md);
 
 //  hnseg = new TH1F("hnseg","Number of segments for selected tracks",4096,0,8192);
   if (M.fChain == 0) return;
@@ -41,7 +41,8 @@ void mana(){
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
  
     Long64_t ientry = M.LoadTree(jentry);
-//cout << "jentry" << jentry << endl; 
+
+    
     if (ientry < 0) break;
   
     nb = M.fChain->GetEntry(jentry);   nbytes += nb;
