@@ -15,7 +15,7 @@ void mana(){
   TChain * md = new TChain("midas_data");
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
   
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
 //  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00002050_reprocessed.root");
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00002177_reprocessed.root");
   
@@ -55,13 +55,18 @@ md->Draw("crt_nHitSatTot");
 
   c->Print("Crt_CH_Histtot.pdf");
   
- // for (int i=0; i<4; i++) {
+  for (int i=0; i<4; i++) {
     TCanvas * c2 = new TCanvas();
-   // c2->Divide(8,4);
- //   TH1F * h
- // }
+    c2->Divide(8,4);
+    
+    for (int j=0; j<32; j++) {
+      c2->cd(j+1);
+      md->Draw("crt_adc[i][j]","crt_adc>0");
+    }
+    c2->Print(Form("Crt_adc_%d",i))
+  }
 
-  md->Draw("crt_adc");
+  //md->Draw("crt_adc");
 
 
 
