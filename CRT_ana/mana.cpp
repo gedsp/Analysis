@@ -64,10 +64,13 @@ void mana(){
  
   TCanvas * c2 = new TCanvas();
   c2->Divide(2,2);
-    
+  c2->cd(1);
   plano0->Draw("hist");
+  c2->cd(2);
   plano1->Draw("hist");
+  c2->cd(3);
   plano2->Draw("hist");
+  c2->cd(4);
   plano3->Draw("hist");
     
   c2->Print("Crt_adc_.pdf");
