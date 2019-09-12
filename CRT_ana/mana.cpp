@@ -32,7 +32,7 @@ void mana(){
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
  
     Long64_t ientry = M.LoadTree(jentry);
- 
+//cout << "jentry" << jentry << endl; 
     if (ientry < 0) break;
   
     nb = M.fChain->GetEntry(jentry);   nbytes += nb;
