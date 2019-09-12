@@ -6,7 +6,7 @@
 //
 
 #include <stdio.h>
-
+#include "midas_data.h"
 
 
 
@@ -24,7 +24,9 @@ void mana(){
 
 //  hnseg = new TH1F("hnseg","Number of segments for selected tracks",4096,0,8192);
   if (M.fChain == 0) return;
+  
   M.Init(M.fChain);
+  
   Long64_t nentries = M.fChain->GetEntriesFast();
 
   
