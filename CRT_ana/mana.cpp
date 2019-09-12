@@ -6,7 +6,7 @@
 //
 
 #include <stdio.h>
-#include "Midas_TREE.h"
+
 
 
 
@@ -20,18 +20,20 @@ void mana(){
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00002177_reprocessed.root");
   
   
-  Midas_TREE M(md);
+  
 
 //  hnseg = new TH1F("hnseg","Number of segments for selected tracks",4096,0,8192);
-  if (M.fChain == 0) return;
+  if (md == 0) return;
   
-  M.Init(M.fChain);
   
-  Long64_t nentries = M.fChain->GetEntriesFast();
+  
+  Long64_t nentries = md->GetEntries();
 
-  
+    Int_t           crt_adc[4][32];
+     TBranch        *b_crt_adc;
   
   Long64_t nbytes = 0, nb = 0;
+  
   TH1F* plano0 = new TH1F("plano0", "plano0", 10000,1,4100);
   TH1F* plano1 = new TH1F("plano1", "plano1", 10000,1,4100);
   TH1F* plano2 = new TH1F("plano2", "plano2", 10000,1,4100);
@@ -40,14 +42,12 @@ void mana(){
   
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
  
-    Long64_t ientry = M.LoadTree(jentry);
+   fChain->SetBranchAddress("crt_adc", crt_adc, &b_crt_adc);
 
     
     if (ientry < 0) break;
   
-    nb = M.fChain->GetEntry(jentry);   nbytes += nb;
-  // if (Cut(ientry) < 0) continue;
-   // hist->Fill(crt_adc);
+    nb = md->GetEntry(jentry);   nbytes += nb;
 
     
       for (int j=0; j<32; j++) {
