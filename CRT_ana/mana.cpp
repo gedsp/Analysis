@@ -61,7 +61,7 @@ md->Draw("crt_nHitSatTot");
     
     for (int j=0; j<32; j++) {
       c2->cd(j+1);
-      md->Draw("crt_adc[i][j]","crt_adc>0");
+      md->Draw("crt_adc[i][j]");
     }
     c2->Print(Form("Crt_adc_%d",i));
   }
