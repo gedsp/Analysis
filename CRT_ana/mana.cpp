@@ -79,9 +79,12 @@ void mana(){
           double p1 =crt_adc[1][j]+crt_adc[1][j+1];
           double p2 =crt_adc[2][j]+crt_adc[2][j+1];
           double p3 =crt_adc[3][j]+crt_adc[3][j+1];
-
+         
+          cout << "p0 " << p0 << "\tp1 " << p1 << endl;
+          
           plano01->Fill(p0,p1);
           plano23->Fill(p2,p3);
+          
         }
         
       }
@@ -105,10 +108,10 @@ void mana(){
   c2->Print("Crt_adc_.pdf");
   
   TCanvas * c3 = new TCanvas();
-  c2->Divide(1,2);
-  c2->cd(1);
+  c3->Divide(1,2);
+  c3->cd(1);
   plano01->Draw("COLZ");
-  c2->cd(2);
+  c3->cd(2);
   plano23->Draw("COLZ");
 
   c3->Print("Crt_adc_coincidencias.pdf");
