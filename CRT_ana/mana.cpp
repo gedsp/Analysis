@@ -35,10 +35,10 @@ void mana(){
   
   Long64_t nbytes = 0, nb = 0;
   
-  TH1F* plano0 = new TH1F("plano0", "plano0", 10000,0,4500);
-  TH1F* plano1 = new TH1F("plano1", "plano1", 10000,0,4500);
-  TH1F* plano2 = new TH1F("plano2", "plano2", 10000,0,4500);
-  TH1F* plano3 = new TH1F("plano3", "plano3", 10000,0,4500);
+  TH1F* plano0 = new TH1F("plano0", "plano0", 10000,0.1,4500);
+  TH1F* plano1 = new TH1F("plano1", "plano1", 10000,0.1,4500);
+  TH1F* plano2 = new TH1F("plano2", "plano2", 10000,0.1,4500);
+  TH1F* plano3 = new TH1F("plano3", "plano3", 10000,0.1,4500);
   
   
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
