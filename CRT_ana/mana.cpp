@@ -40,8 +40,8 @@ void mana(){
   TH1F* plano2 = new TH1F("plano2", "plano2", 10000,0.1,4500);
   TH1F* plano3 = new TH1F("plano3", "plano3", 10000,0.1,4500);
   
-  TH2F* plano01 = new TH2F("plano01", "plano01",10000,0.1,4500);
-  TH2F* plano23 = new TH2F("plano23", "plano23",10000,0.1,4500);
+  TH2F* plano01 = new TH2F("plano01", "plano01",10000,0.1,4500,10000,0.1,4500);
+  TH2F* plano23 = new TH2F("plano23", "plano23",10000,0.1,4500,10000,0.1,4500);
   plano01->SetTitle("Coincidencias Planos 0 e 1; Plano 0; Plano 1");
   plano23->SetTitle("Coincidencias Planos 2 e 3; Plano 2; Plano 3");
 
