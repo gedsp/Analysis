@@ -18,8 +18,8 @@ void mana(){
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
-  //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
-  //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+//  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
+//  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   
   
@@ -39,6 +39,18 @@ void mana(){
   plano[1] = new TH1F("plano1", "plano1", 10000,0.1,4500);
   plano[2] = new TH1F("plano2", "plano2", 10000,0.1,4500);
   plano[3] = new TH1F("plano3", "plano3", 10000,0.1,4500);*/
+  
+  
+  //signal diff
+  
+  TH1F *  plano0DIF = new TH1F("plano0", "plano0", 100000,-800,800);
+  TH1F * plano1DIF = new TH1F("plano1", "plano1", 100000,-800,800);
+  TH1F * plano2DIF = new TH1F("plano2", "plano2", 10000,-800,800);
+  TH1F * plano3DIF = new TH1F("plano3", "plano3", 10000,-800,800);
+  plano0DIF->SetTitle("Plane 0; S1-S2; # events");
+  plano1DIF->SetTitle("Plane 1; S1-S2; # events");
+  plano2DIF->SetTitle("Plane 2; S1-S2; # events");
+  plano3DIF->SetTitle("Plane 3; S1-S2; # events");
   
   // planes occupancy
   
@@ -61,12 +73,12 @@ void mana(){
     double MAX2=-9999999;
     double MAX3=-9999999;
     
-    
+    int zeros;
     int barID[4];
  //   if (ientry < 0) break;
   
     nb = md->GetEntry(jentry);   nbytes += nb;
-
+    
     
     // plane signal
     double PlaneSignalTot[4][16];
@@ -87,17 +99,30 @@ void mana(){
         
         if (j % 2 == 0){
           
-          int b=j/2;
+           int b=j/2;
            PlaneSignalTot[k][b]=crt_adc[k][j]+crt_adc[k][j+1];
            PlaneSignalDif[k][b]=crt_adc[k][j]-crt_adc[k][j+1];
- 
         
+          // Studying signal diff
+          if (abs(PlaneSignalDif[k][b])<0.000000000000000001){
+            
+            zeros++;
+            
+          }
+          else{
+          plano0DIF->Fill(PlaneSignalDif[0][b]);
+          plano1DIF->Fill(PlaneSignalDif[1][b]);
+          plano2DIF->Fill(PlaneSignalDif[2][b]);
+          plano3DIF->Fill(PlaneSignalDif[3][b]);
+          }
+
         }
+    
         
-       // cout << "PlaneSignalTot " << k << " " << j << " \t "  <<  PlaneSignalTot[k][j] << endl;
-       
       }
-         // Get Max signal per plane
+      
+     // cout << "PlaneSignalDif " << k << " zeros = " << zeros << endl;
+         // Get Max/Min signal per plane
       
         double * pmin  =  min_element(begin(PlaneSignalTot[k]), end(PlaneSignalTot[k]));
 
@@ -108,27 +133,19 @@ void mana(){
         
         
         barID[k]= distance(PlaneSignalTot[k], pmax);
-        if (PlaneMax[k]>0.01){
-          g=1;
-         myfile << "\n____________Entry (in loop)____________" << jentry << "_______________________________________________\n";
-
-          //cout << "plane id " << k << "\tbarID " << barID[k] << "\t MAX " << PlaneMax[k] << endl;
-          myfile << "plane id " << k << "\tbarID " << barID[k] << "\t MAX " << PlaneMax[k] << endl;
+     
+      
+      if (PlaneMax[k]>0.01){
+        
+        g=1;
+        myfile << "\n____________Entry____________" << jentry << "___________________going to fill the histo_________________\n";
+        myfile << "plane id " << k << "\tbarID " << barID[k] << "\t MAX " << PlaneMax[k] << endl;
 
      
       }
-    
-   // cout << "MAX 0 " << MAX0 << "\t MAX 1 " << MAX1 << endl;
-    //cout << "MAX 2 " << MAX2 << "\t MAX 3 " << MAX3 << endl;
-    
-    }
-    
-  /*  cout << "\n_______________________________________________________________________\n";
-    cout << "plane id 0" << "\tbarID " << barID[0] << "\t MAX " << PlaneMax[0] << endl;
-    cout << "plane id 1" << "\tbarID " << barID[1] << "\t MAX " << PlaneMax[1] << endl;
-    cout << "plane id 2" << "\tbarID " << barID[2] << "\t MAX " << PlaneMax[2] << endl;
-    cout << "plane id 3" << "\tbarID " << barID[3] << "\t MAX " << PlaneMax[3] << endl;*/
 
+    }
+  
     myfile << "\n________________Entry___________" << jentry << "____________________________________________\n";
     myfile << "plane id 0" << "\tbarID " << barID[0] << "\t MAX " << PlaneMax[0] << endl;
     myfile << "plane id 1" << "\tbarID " << barID[1] << "\t MAX " << PlaneMax[1] << endl;
@@ -143,24 +160,26 @@ void mana(){
     g=0;
    
     
+   
   }
   
   
 
- /*
+ 
   TCanvas * c2 = new TCanvas();
   c2->Divide(2,2);
   c2->cd(1);
-  plano0->Draw("hist");
+  plano0DIF->Draw("hist");
   c2->cd(2);
-  plano1->Draw("hist");
+  plano1DIF->Draw("hist");
   c2->cd(3);
-  plano2->Draw("hist");
+  plano2DIF->Draw("hist");
   c2->cd(4);
-  plano3->Draw("hist");
+  plano3DIF->Draw("hist");
     
-  c2->Print("Crt_adc_.pdf");
- */
+  c2->Print("Crt_adc_diff_w_o_0.pdf");
+ 
+ /*
   TCanvas * c3 = new TCanvas();
   c3->Divide(1,2);
   c3->cd(1);
@@ -168,9 +187,9 @@ void mana(){
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("Crt_adc_coincidencias_barras.pdf");
+  c3->Print("Crt_coincidencias_barras.pdf");
   
-  
+  */
 
   //md->Draw("crt_adc");
 
