@@ -13,13 +13,13 @@ void mana(){
   TChain * md = new TChain("midas_data");
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
   
-  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
-  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
-  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
-  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
-  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
-  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+ // md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
+ // md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   
   
@@ -176,7 +176,9 @@ void mana(){
 
  
   TCanvas * c2 = new TCanvas();
-  c2->Divide(2,2);
+
+  gStyle->SetOptStat(0);  
+c2->Divide(2,2);
   c2->cd(1);
   gPad->SetLogy();
   plano0DIF->Draw("hist");
@@ -194,7 +196,9 @@ void mana(){
  
  
   TCanvas * c3 = new TCanvas();
-  c3->Divide(1,2);
+
+  gStyle->SetOptStat(0);  
+c3->Divide(1,2);
   c3->cd(1);
   plano01->Draw("COLZ");
   c3->cd(2);
@@ -203,7 +207,9 @@ void mana(){
   c3->Print("Crt_coincidencias_barras.pdf");
   
   TCanvas * c31 = new TCanvas();
-  c31->Divide(1,2);
+
+  gStyle->SetOptStat(0); 
+ c31->Divide(1,2);
   c31->cd(1);
   plano01W->Draw("COLZ");
   c31->cd(2);
