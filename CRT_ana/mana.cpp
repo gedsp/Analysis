@@ -13,13 +13,13 @@ void mana(){
   TChain * md = new TChain("midas_data");
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
   
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
+  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
+  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
+  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
+  //md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
-//  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
-//  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
+  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   
   
@@ -43,10 +43,10 @@ void mana(){
   
   //signal diff
   
-  TH1F *  plano0DIF = new TH1F("plano0", "plano0", 100000,-800,800);
-  TH1F * plano1DIF = new TH1F("plano1", "plano1", 100000,-800,800);
-  TH1F * plano2DIF = new TH1F("plano2", "plano2", 10000,-800,800);
-  TH1F * plano3DIF = new TH1F("plano3", "plano3", 10000,-800,800);
+  TH1F *  plano0DIF = new TH1F("plano0", "plano0", 100000,-3000,3000);
+  TH1F * plano1DIF = new TH1F("plano1", "plano1", 100000,-3000,3000);
+  TH1F * plano2DIF = new TH1F("plano2", "plano2", 10000,-3000,3000);
+  TH1F * plano3DIF = new TH1F("plano3", "plano3", 10000,-3000,3000);
   plano0DIF->SetTitle("Plane 0; S1-S2; # events");
   plano1DIF->SetTitle("Plane 1; S1-S2; # events");
   plano2DIF->SetTitle("Plane 2; S1-S2; # events");
@@ -60,6 +60,13 @@ void mana(){
   plano23->SetTitle("Coincidencias Planos 2 e 3; Plano 2; Plano 3");
 
 
+  // planes occupancy weighted
+  TH2F* plano01W = new TH2F("plano01W", "plano01W", 16,0.0,16,16,0.0,16);
+  TH2F* plano23W = new TH2F("plano23W", "plano23W",16,0.0,16,16,0.0,16);
+  plano01W->SetTitle("Coincidencias Planos 0 e 1; Plano 0; Plano 1");
+  plano23W->SetTitle("Coincidencias Planos 2 e 3; Plano 2; Plano 3");
+  
+  
   ofstream myfile;
   myfile.open ("DADOS.txt");
   int g=0;
@@ -155,6 +162,8 @@ void mana(){
     if (g==1) {
       plano01->Fill(barID[0],barID[1]);
       plano23->Fill(barID[2],barID[3]);
+      plano01W->Fill(barID[0],barID[1],PlaneMax[0]+PlaneMax[1]);
+      plano23W->Fill(barID[2],barID[3],PlaneMax[2]+PlaneMax[3]);
     }
     
     g=0;
@@ -169,17 +178,21 @@ void mana(){
   TCanvas * c2 = new TCanvas();
   c2->Divide(2,2);
   c2->cd(1);
+  gPad->SetLogy();
   plano0DIF->Draw("hist");
   c2->cd(2);
+  gPad->SetLogy();
   plano1DIF->Draw("hist");
   c2->cd(3);
+  gPad->SetLogy();
   plano2DIF->Draw("hist");
   c2->cd(4);
+  gPad->SetLogy();
   plano3DIF->Draw("hist");
     
-  c2->Print("Crt_adc_diff_w_o_0.pdf");
+  c2->Print("Crt_adc_diff_w_o_0_log.pdf");
  
- /*
+ 
   TCanvas * c3 = new TCanvas();
   c3->Divide(1,2);
   c3->cd(1);
@@ -189,7 +202,16 @@ void mana(){
 
   c3->Print("Crt_coincidencias_barras.pdf");
   
-  */
+  TCanvas * c31 = new TCanvas();
+  c31->Divide(1,2);
+  c31->cd(1);
+  plano01W->Draw("COLZ");
+  c31->cd(2);
+  plano23W->Draw("COLZ");
+  
+  c3->Print("Crt_coincidencias_barras_weighted.pdf");
+  
+  
 
   //md->Draw("crt_adc");
 
