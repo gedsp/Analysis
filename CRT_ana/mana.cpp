@@ -14,12 +14,12 @@ void mana(){
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
   
  //// md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
+ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
+ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
 //  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
-  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+  //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   
   
@@ -42,14 +42,14 @@ void mana(){
   
   vector<TH1F*> V_plano;
   
-  TH1F * p0 = new TH1F("plano0", "plano0", 10000,0.1,4500);
-  TH1F * p1 = new TH1F("plano1", "plano1",  10000,0.1,4500);
-  TH1F * p2 = new TH1F("plano2", "plano2", 10000,0.1,4500);
-  TH1F * p3 = new TH1F("plano3", "plano3",  10000,0.1,4500);
-  p0->SetTitle("Plane 0; ADC Signal; # events");
-  p1->SetTitle("Plane 1; ADC Signal; # events");
-  p2->SetTitle("Plane 2; ADC Signal; # events");
-  p3->SetTitle("Plane 3; ADC Signal; # events");
+  TH1F * p0 = new TH1F("plano0", "plano0", 10000,0.1,8500);
+  TH1F * p1 = new TH1F("plano1", "plano1",  10000,0.1,8500);
+  TH1F * p2 = new TH1F("plano2", "plano2", 10000,0.1,8500);
+  TH1F * p3 = new TH1F("plano3", "plano3",  10000,0.1,8500);
+  p0->SetTitle("Plane 0; S1+S2; # events");
+  p1->SetTitle("Plane 1; S1+S2; # events");
+  p2->SetTitle("Plane 2; S1+S2; # events");
+  p3->SetTitle("Plane 3; S1+S2; # events");
   
   
   V_plano.push_back(p0);
@@ -86,12 +86,12 @@ void mana(){
 
 
   // planes occupancy weighted
-  TH1F* plano0W = new TH1F("plano01W", "plano01W", 16,0.0,16);
-  TH1F* plano2W = new TH1F("plano23W", "plano23W",16,0.0,16);
+  TH2F* plano0W = new TH2F("plano01W", "plano01W", 16,0.0,16,20,0.0,8000);
+  TH2F* plano2W = new TH2F("plano23W", "plano23W",16,0.0,16,20,0.0,8000);
   plano0W->SetTitle("Plane 0; Plano 0; Signal Max");
   plano2W->SetTitle("Plane 2; Plano 2; Signal Max");
-  TH1F* plano1W = new TH1F("plano1W", "plano1W", 16,0.0,16);
-  TH1F* plano3W = new TH1F("plano3W", "plano3W",16,0.0,16);
+  TH2F* plano1W = new TH2F("plano1W", "plano1W", 16,0.0,16,20,0.0,8000);
+  TH2F* plano3W = new TH2F("plano3W", "plano3W",16,0.0,16,20,0.0,8000);
   plano1W->SetTitle("Plane 1; Plano 1; Signal Max");
   plano3W->SetTitle("Plane 3; Plano 3; Signal Max");
   
@@ -119,8 +119,6 @@ void mana(){
     
       for (int j=0; j<32; j++) { //loop on SiPM
         
-       
-        V_plano[k]->Fill(crt_adc[k][j]);
       
         
         /*******************************************************/
@@ -140,6 +138,7 @@ void mana(){
           else {
             PlaneSignalTot[k][b]=crt_adc[k][j]+crt_adc[k][j+1];
            PlaneSignalDif[k][b]=crt_adc[k][j]-crt_adc[k][j+1];
+            V_plano[k]->Fill(PlaneSignalTot[k][b]);
           }
          
           // Studying signal diff
@@ -195,13 +194,12 @@ void mana(){
     if (g==1) {
       plano01->Fill(barID[0],barID[1]);
       plano23->Fill(barID[2],barID[3]);
-      if (jentry==1){
+     
       plano0W->Fill(barID[0], PlaneMax[0]);
       plano2W->Fill(barID[2] , PlaneMax[1]);
       plano1W->Fill(barID[1], PlaneMax[2]);
         plano3W->Fill(barID[3], PlaneMax[3]);
-        
-      }
+      
     }
     
     g=0;
@@ -298,13 +296,13 @@ c3->Divide(1,2);
   gStyle->SetOptStat(0);
  c31->Divide(2,2);
   c31->cd(1);
-  plano0W->Draw("hist");
+  plano0W->Draw("COLZ");
   c31->cd(2);
-  plano1W->Draw("hist");
+  plano1W->Draw("COLZ");
   c31->cd(3);
-  plano2W->Draw("hist");
+  plano2W->Draw("COLZ");
   c31->cd(4);
-  plano3W->Draw("hist");
+  plano3W->Draw("COLZ");
   c3->Print("Crt_barras_weighted.pdf");
   
   double int0 = plano0W->Integral(0,16);
