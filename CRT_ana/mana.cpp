@@ -19,7 +19,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
 //  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
-  //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+//md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   
   
@@ -197,7 +197,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       
       if (PlaneMax[k]>3000 /*VALUE OF THRESHOLD */){
         
-        g=1;
+        g=g+1;
         myfile << "\n____________Entry____________" << jentry << "___________________going to fill the histo_________________\n";
         myfile << "plane id " << k << "\tbarID " << barID[k] << "\t MAX " << PlaneMax[k] << endl;
 
@@ -212,7 +212,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
     myfile << "plane id 2" << "\tbarID " << barID[2] << "\t MAX " << PlaneMax[2] << endl;
     myfile << "plane id 3" << "\tbarID " << barID[3] << "\t MAX " << PlaneMax[3] << endl;
     
-    if (g==1) {
+    if (g==3) {
       plano01->Fill(barID[0],barID[1]);
       plano23->Fill(barID[2],barID[3]);
      
