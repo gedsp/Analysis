@@ -33,13 +33,7 @@ void mana(){
      TBranch        *b_crt_adc;
   
   Long64_t nbytes = 0, nb = 0;
-  
- /* TH1F * plano[4];
-  plano[0] = new TH1F("plano0", "plano0", 10000,0.1,4500);
-  plano[1] = new TH1F("plano1", "plano1", 10000,0.1,4500);
-  plano[2] = new TH1F("plano2", "plano2", 10000,0.1,4500);
-  plano[3] = new TH1F("plano3", "plano3", 10000,0.1,4500);*/
-  
+
   vector<TH1F*> V_plano;
   
   TH1F * p0 = new TH1F("plano0", "plano0", 10000,0.1,8500);
@@ -62,10 +56,10 @@ void mana(){
   
   vector<TH1F*> V_hist;
   
-  TH1F * p0dif = new TH1F("plano0", "plano0", 100000,-1000,1000);
-  TH1F * p1dif = new TH1F("plano1", "plano1", 100000,-1000,1000);
-  TH1F * p2dif = new TH1F("plano2", "plano2", 10000,-1000,1000);
-  TH1F * p3dif = new TH1F("plano3", "plano3", 10000,-1000,1000);
+  TH1F * p0dif = new TH1F("plano0d", "plano0d", 100000,-1000,1000);
+  TH1F * p1dif = new TH1F("plano1d", "plano1d", 100000,-1000,1000);
+  TH1F * p2dif = new TH1F("plano2d", "plano2d", 10000,-1000,1000);
+  TH1F * p3dif = new TH1F("plano3d", "plano3d", 10000,-1000,1000);
   p0dif->SetTitle("Plane 0; S1-S2; # events");
   p1dif->SetTitle("Plane 1; S1-S2; # events");
   p2dif->SetTitle("Plane 2; S1-S2; # events");
@@ -94,6 +88,27 @@ void mana(){
   TH2F* plano3W = new TH2F("plano3W", "plano3W",16,0.0,16,20,0.0,8000);
   plano1W->SetTitle("Plane 1; Plano 1; Signal Max");
   plano3W->SetTitle("Plane 3; Plano 3; Signal Max");
+  
+  // Si+s2 max
+  
+  vector<TH1F*> V_plano_Max;
+  
+  TH1F * p0_Max = new TH1F("plano0_Max", "plano0_Max", 10000,0.1,8500);
+  TH1F * p1_Max = new TH1F("plano1_Max", "plano1_Max",  10000,0.1,8500);
+  TH1F * p2_Max = new TH1F("plano2_Max", "plano2_Max", 10000,0.1,8500);
+  TH1F * p3_Max = new TH1F("plano3_Max", "plano3_Max",  10000,0.1,8500);
+  p0_Max->SetTitle("Plane 0; SB Max; # events");
+  p1_Max->SetTitle("Plane 1; SB Max; # events");
+  p2_Max->SetTitle("Plane 2; SB Max; # events");
+  p3_Max->SetTitle("Plane 3; SB Max; # events");
+  
+  
+  V_plano_Max.push_back(p0_Max);
+  V_plano_Max.push_back(p1_Max);
+  V_plano_Max.push_back(p2_Max);
+  V_plano_Max.push_back(p3_Max);
+  
+  
   
   ofstream myfile;
   myfile.open ("DADOS.txt");
@@ -138,7 +153,10 @@ void mana(){
           else {
             PlaneSignalTot[k][b]=crt_adc[k][j]+crt_adc[k][j+1];
            PlaneSignalDif[k][b]=crt_adc[k][j]-crt_adc[k][j+1];
+            
             V_plano[k]->Fill(PlaneSignalTot[k][b]);
+            
+           
           }
          
           // Studying signal diff
@@ -173,6 +191,7 @@ void mana(){
         
         barID[k]= distance(PlaneSignalTot[k], pmax);
      
+      V_plano_Max[k]->Fill(PlaneMax[k]);
       
       if (PlaneMax[k]>0.01){
         
@@ -338,6 +357,21 @@ c3->Divide(1,2);
   
   
 
+  /**************************************************/
+   
+   TCanvas * c5 = new TCanvas();
+   
+   gStyle->SetOptStat(0);
+   c5->Divide(2,2);
+   c5->cd(1);
+   V_plano_Max[0]->Draw("hist");
+   c5->cd(2);
+   V_plano_Max[1]->Draw("hist");
+   c5->cd(3);
+   V_plano_Max[2]->Draw("hist");
+   c5->cd(4);
+   V_plano_Max[3]->Draw("hist");
+   c5->Print("Crt_adc_readout_Max.pdf");
 
 
 
