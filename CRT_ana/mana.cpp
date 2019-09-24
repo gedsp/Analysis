@@ -16,7 +16,7 @@ void mana(){
  //// md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
 md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
- md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
+md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
 //  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
 //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
@@ -346,21 +346,29 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
 */
   
     TCanvas * c1 = new TCanvas();
-
+gStyle->SetGridStyle(3);
   //  gStyle->SetOptStat(0);
   c1->Divide(2,2);
     c1->cd(1);
   gPad->SetGrid();
-    plano_cut_hprof[0]->Draw("E");
+  plano_cut_hprof[0]->SetLineColor(2);
+   plano_cut_hprof[0]->SetLineWidth(2);
+  plano_cut_hprof[0]->Draw("E");
     c1->cd(2);
     gPad->SetGrid();
-   plano_cut_hprof[1]->Draw("E");
+  plano_cut_hprof[1]->SetLineColor(2);
+     plano_cut_hprof[1]->SetLineWidth(2);
+  plano_cut_hprof[1]->Draw("EP");
   c1->cd(3);
     gPad->SetGrid();
-    plano_cut_hprof[2]->Draw("E");
+   plano_cut_hprof[2]->SetLineColor(2);
+     plano_cut_hprof[2]->SetLineWidth(2);
+  plano_cut_hprof[2]->Draw("E");
     c1->cd(4);
     gPad->SetGrid();
-    plano_cut_hprof[3]->Draw("E");
+   plano_cut_hprof[3]->SetLineColor(2);
+     plano_cut_hprof[3]->SetLineWidth(2);
+  plano_cut_hprof[3]->Draw("E");
 
     c1->Print("tprofile.pdf");
   
