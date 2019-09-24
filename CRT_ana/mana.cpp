@@ -190,20 +190,21 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
           
            int b=j/2;
           
-         /* if(crt_adc[k][j]==4089||crt_adc[k][j+1]==4089){
+          
+          if(crt_adc[k][j]==4089||crt_adc[k][j+1]==4089){
             
             overflow++;
           //  cout << overflow << endl;
             
           }
-          else {*/
+          else {
             PlaneSignalTot[k][b]=crt_adc[k][j]+crt_adc[k][j+1];
             PlaneSignalDif[k][b]=crt_adc[k][j]-crt_adc[k][j+1];
             
             
             V_plano[k]->Fill(PlaneSignalTot[k][b]);
             
-         // }
+          }
          
           // Studying signal diff
           if (abs(crt_adc[k][j])<0.1||abs(crt_adc[k][j+1])<0.1||PlaneSignalDif[k][b]==0){
@@ -349,12 +350,16 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   //  gStyle->SetOptStat(0);
   c1->Divide(2,2);
     c1->cd(1);
+  gPad->SetGrid();
     plano_cut_hprof[0]->Draw("E");
     c1->cd(2);
+    gPad->SetGrid();
    plano_cut_hprof[1]->Draw("E");
   c1->cd(3);
+    gPad->SetGrid();
     plano_cut_hprof[2]->Draw("E");
     c1->cd(4);
+    gPad->SetGrid();
     plano_cut_hprof[3]->Draw("E");
 
     c1->Print("tprofile.pdf");
@@ -431,7 +436,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
  */
  /**************************************************/
  
- /* TCanvas * c3 = new TCanvas();
+  TCanvas * c3 = new TCanvas();
 
   gStyle->SetOptStat(0);  
 c3->Divide(1,2);
@@ -440,12 +445,12 @@ c3->Divide(1,2);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("Crt_coincidencias_barras.pdf");*/
+  c3->Print("Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
 
- /* TCanvas * c31 = new TCanvas();
+  TCanvas * c31 = new TCanvas();
 
   gStyle->SetOptStat(0);
  c31->Divide(2,2);
@@ -457,7 +462,7 @@ c3->Divide(1,2);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c3->Print("Crt_barras_weighted.pdf");*/
+  c3->Print("Crt_barras_weighted.pdf");
   
  /* double int0 = plano0W->Integral(0,16);
   double int1 = plano1W->Integral(0,16);
