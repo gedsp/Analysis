@@ -14,13 +14,15 @@ void mana(){
  // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
   
  //// md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
- md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
+// md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
+//md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
+//md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
 //  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
-//md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
+  double min_threshold_bar = 500;
+  double max_threshold_PM= 4089;
   
   
   if (md == 0) return;
@@ -55,7 +57,6 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   // cut signal
   
  vector < vector<TH1F*> > V_plano_cut;
-   
   
   
   TH1F * p0_cut;
@@ -70,7 +71,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
     
       
       p0_cut = new TH1F(Form("plano_%d_cut_%d",j,i), "plano0", 10000,0.1,8500);
-      p0_cut->SetTitle(Form("Plane %d Cut %d; S1+S2; # events",j,cut));
+      p0_cut->SetTitle(Form("Plane %d Cut %d; S_{B}; # events",j,cut));
       
       plano_cut.push_back(p0_cut);
 
@@ -82,6 +83,28 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   }
   
 
+  
+  // cutted && 1st max vs 2nd max
+  vector<TH2F*>  V_1maxvs2max;
+  vector<TH1F*>  V_plano_tot_cut;
+  TH1F* p_tot_cut;
+  TH2F* p_1maxvs2max;
+  for (int j =0; j<4; j++) {
+       
+       
+    p_tot_cut =new TH1F(Form("plano_%d_cutted",j), "plano0", 10000,0.1,8500);
+    p_tot_cut->SetTitle(Form("Plane %d; S_{B}; # events",j));
+  
+    p_1maxvs2max =new TH2F(Form("plano_%d_1maxvs2max",j), "plano0", 8000,0.1,8500,8000,0.1,8500);
+    p_1maxvs2max->SetTitle(Form("Plane %d; S_{B} 1st max;  S_{B} 2nd max",j));
+       
+    V_plano_tot_cut.push_back( p_tot_cut);
+    V_1maxvs2max.push_back(p_1maxvs2max);
+    
+  }
+  
+  
+  
   // tprofile
   vector<TProfile*>  plano_cut_hprof;
   TProfile* hprof;
@@ -191,7 +214,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
            int b=j/2;
           
           
-          if(crt_adc[k][j]==4089||crt_adc[k][j+1]==4089){
+          if(crt_adc[k][j]==max_threshold_PM||crt_adc[k][j+1]==max_threshold_PM){ //upper cut
             
             overflow++;
           //  cout << overflow << endl;
@@ -201,6 +224,10 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
             PlaneSignalTot[k][b]=crt_adc[k][j]+crt_adc[k][j+1];
             PlaneSignalDif[k][b]=crt_adc[k][j]-crt_adc[k][j+1];
             
+            if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
+            {
+               V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
+            }
             
             V_plano[k]->Fill(PlaneSignalTot[k][b]);
             
@@ -228,35 +255,35 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
      // cout << "PlaneSignalDif " << k << " zeros = " << zeros << endl;
          // Get Max/Min signal per plane
       
-        double * pmin  =  min_element(begin(PlaneSignalTot[k]), end(PlaneSignalTot[k]));
-
-        double * pmax =  max_element(begin(PlaneSignalTot[k]), end(PlaneSignalTot[k]));
-        
-        PlaneMax[k]=*pmax;
-        PlaneMin[k]=*pmin;
-        
-        
-        barID[k]= distance(PlaneSignalTot[k], pmax);
+      
+      double * pmin  =  min_element(begin(PlaneSignalTot[k]), end(PlaneSignalTot[k]));
+      double * pmax =  max_element(begin(PlaneSignalTot[k]), end(PlaneSignalTot[k]));
+     
+      PlaneMax[k]=*pmax;
+      PlaneMin[k]=*pmin;
+       
+      barID[k]= distance(PlaneSignalTot[k], pmax);
      
       V_plano_Max[k]->Fill(PlaneMax[k]);
       
-      if (PlaneMax[k]>500 /*VALUE OF THRESHOLD */){
+      
+      if (PlaneMax[k]>min_threshold_bar /*VALUE OF THRESHOLD */){
         
         g=g+1;
-        myfile << "\n____________Entry____________" << jentry << "___________________going to fill the histo_________________\n";
-        myfile << "plane id " << k << "\tbarID " << barID[k] << "\t MAX " << PlaneMax[k] << endl;
-
      
       }
 
+      // GET 1ST MAX VS 2ND MAX
+      
+        int n = sizeof(PlaneSignalTot[k])/sizeof(PlaneSignalTot[k][0]);
+      
+        sort(PlaneSignalTot[k], PlaneSignalTot[k]+n);
+      
+      V_1maxvs2max[k]->Fill(PlaneSignalTot[k][15],PlaneSignalTot[k][14]);
+      
+      
     }
   
-    myfile << "\n________________Entry___________" << jentry << "____________________________________________\n";
-    myfile << "plane id 0" << "\tbarID " << barID[0] << "\t MAX " << PlaneMax[0] << endl;
-    myfile << "plane id 1" << "\tbarID " << barID[1] << "\t MAX " << PlaneMax[1] << endl;
-    myfile << "plane id 2" << "\tbarID " << barID[2] << "\t MAX " << PlaneMax[2] << endl;
-    myfile << "plane id 3" << "\tbarID " << barID[3] << "\t MAX " << PlaneMax[3] << endl;
-    
     if (g==3) {
       plano01->Fill(barID[0],barID[1]);
       plano23->Fill(barID[2],barID[3]);
@@ -447,7 +474,7 @@ gStyle->SetGridStyle(3);
   TCanvas * c3 = new TCanvas();
 
   gStyle->SetOptStat(0);  
-c3->Divide(1,2);
+  c3->Divide(1,2);
   c3->cd(1);
   plano01->Draw("COLZ");
   c3->cd(2);
@@ -471,18 +498,7 @@ c3->Divide(1,2);
   c31->cd(4);
   plano3W->Draw("COLZ");
   c3->Print("Crt_barras_weighted.pdf");
-  
- /* double int0 = plano0W->Integral(0,16);
-  double int1 = plano1W->Integral(0,16);
-  double int2 = plano2W->Integral(0,16);
-  double int3 = plano3W->Integral(0,16);
-  
-  cout << "----\tIntegrals \n ";
-  cout << "Plane 0 " << int0  << "\nPlane 1 " << int1 << "\nPlane 2 " << int2 << "\nPlane 3 " << int3 << endl;
 
-  //md->Draw("crt_adc");
-
-*/
 
 
   /**************************************************/
@@ -492,34 +508,34 @@ c3->Divide(1,2);
   gStyle->SetOptStat(0);
   c4->Divide(2,2);
   c4->cd(1);
-  V_plano[0]->Draw("hist");
+  V_plano_tot_cut[0]->Draw("hist");
   c4->cd(2);
-  V_plano[1]->Draw("hist");
+  V_plano_tot_cut[1]->Draw("hist");
   c4->cd(3);
-  V_plano[2]->Draw("hist");
+  V_plano_tot_cut[2]->Draw("hist");
   c4->cd(4);
-  V_plano[3]->Draw("hist");
-  c4->Print("Crt_adc_readout_with_overflow.pdf");
+  V_plano_tot_cut[3]->Draw("hist");
+  c4->Print("Crt_adc_readout_total_cut.pdf");
 
  
  
 
   /**************************************************/
- /*
+ 
    TCanvas * c5 = new TCanvas();
    
    gStyle->SetOptStat(0);
    c5->Divide(2,2);
    c5->cd(1);
-   V_plano_Max[0]->Draw("hist");
+   V_1maxvs2max[0]->Draw("COLZ");
    c5->cd(2);
-   V_plano_Max[1]->Draw("hist");
+    V_1maxvs2max[1]->Draw("COLZ");
    c5->cd(3);
-   V_plano_Max[2]->Draw("hist");
+    V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
-   V_plano_Max[3]->Draw("hist");
-   c5->Print("Crt_adc_readout_Max.pdf");
+    V_1maxvs2max[3]->Draw("COLZ");
+   c5->Print("1stmaxvs2ndmax.pdf");
 
-*/
+
 
 }
