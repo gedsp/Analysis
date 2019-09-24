@@ -52,6 +52,50 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   V_plano.push_back(p3);
   
   
+  // cut signal
+  
+ vector < vector<TH1F*> > V_plano_cut;
+   
+  
+  
+  TH1F * p0_cut;
+  
+  for (int i=0; i<13; i++) {
+      vector<TH1F*>  plano_cut;
+   
+    int cut = (i+1)*500;
+    
+    for (int j =0; j<4; j++) {
+      
+    
+      
+      p0_cut = new TH1F(Form("plano_%d_cut_%d",j,i), "plano0", 10000,0.1,8500);
+      p0_cut->SetTitle(Form("Plane %d Cut %d; S1+S2; # events",j,cut));
+      
+      plano_cut.push_back(p0_cut);
+
+    }
+
+
+    V_plano_cut.push_back(plano_cut);
+
+  }
+  
+
+  // tprofile
+  vector<TProfile*>  plano_cut_hprof;
+  TProfile* hprof;
+  for (int j =0; j<4; j++) {
+       
+       
+      hprof =new TProfile(Form("plano_%d",j), "plano0", 3000,0.1,3000,0.,16.);
+      hprof->SetTitle(Form("Plane %d; Cut Value; # active bars",j));
+       
+       plano_cut_hprof.push_back(hprof);
+
+     }
+  
+  
   //signal diff
   
   vector<TH1F*> V_hist;
@@ -146,20 +190,20 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
           
            int b=j/2;
           
-          if(crt_adc[k][j]==4089||crt_adc[k][j+1]==4089){
+         /* if(crt_adc[k][j]==4089||crt_adc[k][j+1]==4089){
             
             overflow++;
           //  cout << overflow << endl;
             
           }
-          else {
+          else {*/
             PlaneSignalTot[k][b]=crt_adc[k][j]+crt_adc[k][j+1];
             PlaneSignalDif[k][b]=crt_adc[k][j]-crt_adc[k][j+1];
             
             
             V_plano[k]->Fill(PlaneSignalTot[k][b]);
             
-          }
+         // }
          
           // Studying signal diff
           if (abs(crt_adc[k][j])<0.1||abs(crt_adc[k][j+1])<0.1||PlaneSignalDif[k][b]==0){
@@ -195,7 +239,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
      
       V_plano_Max[k]->Fill(PlaneMax[k]);
       
-      if (PlaneMax[k]>3000 /*VALUE OF THRESHOLD */){
+      if (PlaneMax[k]>500 /*VALUE OF THRESHOLD */){
         
         g=g+1;
         myfile << "\n____________Entry____________" << jentry << "___________________going to fill the histo_________________\n";
@@ -225,14 +269,12 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
     
     g=0;
    
-    
    
+   int l=0;
    
   //min cut
-    
-    for (int min=500; min<7000; min=min+500) {
-     
-      vector<vector<double>> CutSig4Planes;
+     int m=0;
+    for (int min=50; min<3000; min=min+50) {
      
       for (int k=0; k<4; k++) {
         
@@ -240,43 +282,36 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
         
          for (int b=0; b<16; b++) {
         
-           
-           
 
            if ( PlaneSignalTot[k][b]>min) {
              
-             CutSignal.push_back(PlaneSignalTot[k][b]);
+             //CutSignal.push_back(PlaneSignalTot[k][b]);
 
-             cut << "envent ID " << jentry << "\tplane " << k << "\tbar " << b << "\tmin cut threshold " << min << " \tPlaneSignalTot value " << PlaneSignalTot[k][b] << endl;
+      //       cut << "envent ID " << jentry << "\tplane " << k << "\tbar " << b << "\tmin cut threshold " << min << " \tPlaneSignalTot value " << PlaneSignalTot[k][b] << endl;
+             //V_plano_cut[m][k]->Fill(PlaneSignalTot[k][b]);
            
-           
+             l++;
            }
-          
+           
           
          } // loop b
       
-        
-        
-        CutSig4Planes.push_back(CutSignal);
-      
-        
-        if (/*CutSignal.size()==1&&*/jentry==1) {
-          
-        //  cout << "plane " << k << "\tsize of cut signal " << CutSignal.size() << endl;
-          
-         // cout << "min cut threshold " << min << endl;
-         // cout << "PlaneSignalTot value in cut signal " << CutSignal[0] << endl;
-          
-        }
-        
-        
+       
+       plano_cut_hprof[k]->Fill(min,l);
+       
+        l=0;
         
       } // loop on planes
     
-      cut << "--------------    ----------------" << endl;
+     
       
+      
+      cut << "--------------    ----------------" << endl;
+      m++;
+   
     } // loop on min value
   
+    //cout << "size " << V_plano_cut.size() << " m " << m << "size[]" << V_plano_cut[0].size() << endl;
   
     cut << "--------------------------------------------------------------------------------------------------" << endl;
   
@@ -287,15 +322,42 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   cut.close();
   
   
+/*
+  
+  for (int i =0; i<13; i++) {
+     
+    TCanvas * c = new TCanvas(Form("%d cut value ", i));
+         c->Divide(2,2);
+         c->cd(1);
+         V_plano_cut[i][0]->Draw("hist");
+         c->cd(2);
+         V_plano_cut[i][1]->Draw("hist");
+         c->cd(3);
+         V_plano_cut[i][2]->Draw("hist");
+         c->cd(4);
+         V_plano_cut[i][3]->Draw("hist");
+
+         c->Print(Form("(%d+1)500_cut_value_event.pdf", i));
+    
+  }
   
   
+*/
   
-  
-  
-  
-  
-  
-  
+    TCanvas * c1 = new TCanvas();
+
+  //  gStyle->SetOptStat(0);
+  c1->Divide(2,2);
+    c1->cd(1);
+    plano_cut_hprof[0]->Draw("E");
+    c1->cd(2);
+   plano_cut_hprof[1]->Draw("E");
+  c1->cd(3);
+    plano_cut_hprof[2]->Draw("E");
+    c1->cd(4);
+    plano_cut_hprof[3]->Draw("E");
+
+    c1->Print("tprofile.pdf");
   
   
   
@@ -369,7 +431,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
  */
  /**************************************************/
  
-  TCanvas * c3 = new TCanvas();
+ /* TCanvas * c3 = new TCanvas();
 
   gStyle->SetOptStat(0);  
 c3->Divide(1,2);
@@ -378,12 +440,12 @@ c3->Divide(1,2);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("Crt_coincidencias_barras.pdf");
+  c3->Print("Crt_coincidencias_barras.pdf");*/
 
 
   /**************************************************/
 
-  TCanvas * c31 = new TCanvas();
+ /* TCanvas * c31 = new TCanvas();
 
   gStyle->SetOptStat(0);
  c31->Divide(2,2);
@@ -395,7 +457,7 @@ c3->Divide(1,2);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c3->Print("Crt_barras_weighted.pdf");
+  c3->Print("Crt_barras_weighted.pdf");*/
   
  /* double int0 = plano0W->Integral(0,16);
   double int1 = plano1W->Integral(0,16);
@@ -412,7 +474,7 @@ c3->Divide(1,2);
 
   /**************************************************/
   
- /* TCanvas * c4 = new TCanvas();
+  TCanvas * c4 = new TCanvas();
   
   gStyle->SetOptStat(0);
   c4->Divide(2,2);
@@ -424,11 +486,10 @@ c3->Divide(1,2);
   V_plano[2]->Draw("hist");
   c4->cd(4);
   V_plano[3]->Draw("hist");
-  c4->Print("Crt_adc_readout.pdf");
+  c4->Print("Crt_adc_readout_with_overflow.pdf");
 
-  //md->Draw("crt_adc");
-  
-  */
+ 
+ 
 
   /**************************************************/
  /*
