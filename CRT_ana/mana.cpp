@@ -143,19 +143,19 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   
   TH2F* plano01 = new TH2F("plano01", "plano01", 16,0.0,16,16,0.0,16);
   TH2F* plano23 = new TH2F("plano23", "plano23",16,0.0,16,16,0.0,16);
-  plano01->SetTitle("Coincidencias Planos 0 e 1; Plano 0; Plano 1");
-  plano23->SetTitle("Coincidencias Planos 2 e 3; Plano 2; Plano 3");
+  plano01->SetTitle("Coincidences Plane 0 and 1; Plane 0; Plane 1");
+  plano23->SetTitle("Coincidences Plane 2 and 3; Plane 2; Plane 3");
 
 
   // planes occupancy weighted
   TH2F* plano0W = new TH2F("plano01W", "plano01W", 16,0.0,16,20,0.0,8000);
   TH2F* plano2W = new TH2F("plano23W", "plano23W",16,0.0,16,20,0.0,8000);
-  plano0W->SetTitle("Plane 0; Plano 0; Signal Max");
-  plano2W->SetTitle("Plane 2; Plano 2; Signal Max");
+  plano0W->SetTitle("Plane 0; bar ID #; Signal Max");
+  plano2W->SetTitle("Plane 2; bar ID #; Signal Max");
   TH2F* plano1W = new TH2F("plano1W", "plano1W", 16,0.0,16,20,0.0,8000);
   TH2F* plano3W = new TH2F("plano3W", "plano3W",16,0.0,16,20,0.0,8000);
-  plano1W->SetTitle("Plane 1; Plano 1; Signal Max");
-  plano3W->SetTitle("Plane 3; Plano 3; Signal Max");
+  plano1W->SetTitle("Plane 1; bar ID #; Signal Max");
+  plano3W->SetTitle("Plane 3; bar ID #; Signal Max");
   
   // Si+s2 max
   
@@ -314,11 +314,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
 
            if ( PlaneSignalTot[k][b]>min) {
              
-             //CutSignal.push_back(PlaneSignalTot[k][b]);
-
-      //       cut << "envent ID " << jentry << "\tplane " << k << "\tbar " << b << "\tmin cut threshold " << min << " \tPlaneSignalTot value " << PlaneSignalTot[k][b] << endl;
-             //V_plano_cut[m][k]->Fill(PlaneSignalTot[k][b]);
-           
+    
              l++;
            }
            
@@ -398,7 +394,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("tprofile.pdf");
+    c1->Print("lxplus/tprofile.pdf");
   
   
   
@@ -468,7 +464,7 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("Crt_adc_diff.pdf");
+  c2->Print("lxplus/Crt_adc_diff.pdf");
  */
  /**************************************************/
  
@@ -481,7 +477,7 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("Crt_coincidencias_barras.pdf");
+  c3->Print("lxplus/Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
@@ -498,7 +494,7 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c3->Print("Crt_barras_weighted.pdf");
+  c31->Print("lxplus/Crt_barras_weighted.pdf");
 
 
 
@@ -509,14 +505,21 @@ gStyle->SetGridStyle(3);
   gStyle->SetOptStat(0);
   c4->Divide(2,2);
   c4->cd(1);
-  V_plano_tot_cut[0]->Draw("hist");
+  
+  TF1 *g5 = new TF1("m1","gaus",200,500);
+  g5->SetLineColor(kRed+1);
+  g5->SetLineWidth(2);
+  
+    V_plano[0]->Fit(g5,"R");
+  
+ // V_plano_tot_cut[0]->Draw("hist");
   c4->cd(2);
-  V_plano_tot_cut[1]->Draw("hist");
+  V_plano[1]->Draw("hist");
   c4->cd(3);
-  V_plano_tot_cut[2]->Draw("hist");
+  V_plano[2]->Draw("hist");
   c4->cd(4);
-  V_plano_tot_cut[3]->Draw("hist");
-  c4->Print("Crt_adc_readout_total_cut.pdf");
+  V_plano[3]->Draw("hist");
+  c4->Print("lxplus/Crt_adc_readout_fitted.pdf");
 
  
  
@@ -535,7 +538,7 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("1stmaxvs2ndmax.pdf");
+   c5->Print("lxplus/1stmaxvs2ndmax.pdf");
 
 
 
