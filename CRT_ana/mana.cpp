@@ -144,7 +144,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   TH2F* plano01 = new TH2F("plano01", "plano01", 16,0.0,16,16,0.0,16);
   TH2F* plano23 = new TH2F("plano23", "plano23",16,0.0,16,16,0.0,16);
   plano01->SetTitle("Coincidences Plane 0 and 1; Plane 0; Plane 1");
-  plano23->SetTitle("Coincidences Plane 2 and 3; Plane 2; Plane 3");
+  plano23->SetTitle("Coincidences Plane 2 and 3; Plane 3; Plane 2");
 
 
   // planes occupancy weighted
@@ -287,7 +287,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   
     if (g==3) {
       plano01->Fill(barID[0],barID[1]);
-      plano23->Fill(barID[2],barID[3]);
+      plano23->Fill(barID[3],barID[2]);
      
       plano0W->Fill(barID[0], PlaneMax[0]);
       plano2W->Fill(barID[2] , PlaneMax[1]);
