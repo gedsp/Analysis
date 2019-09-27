@@ -195,7 +195,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   
   double xf12=0,xf23=0,xf14=0,xf34=0;
   double zf12=0,zf23=0,zf14=0,zf34=0;
-
+  int iOkEvent=0,DrawGraph=0;
   
   for (Long64_t jentry=0; jentry<nentries;jentry++) { /* -----------------------------------       loop on events      ---------------------------------  */
  
@@ -287,7 +287,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       if (PlaneMax[k]>min_threshold_bar /*VALUE OF THRESHOLD */){
         
         g=g+1;
-     
+        
       }
 
       // GET 1ST MAX VS 2ND MAX
@@ -302,57 +302,70 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
     }
   
     if (g==3) {
+      iOkEvent++;
+    
+      if (iOkEvent==1) {
+        DrawGraph=1;
+      }
+      else DrawGraph=0;
+      
       plano01->Fill(barID[0],barID[1]);
       plano23->Fill(barID[3],barID[2]);
      
-      double xx0 = barID[0]*10.8+(barID[0]-1)*0.02+5.4;
-      double zz1 = barID[1]*10.8+(barID[1]-1)*0.02+5.4;
+      double xx0 = barID[0]*10.8+(barID[0]-1)*0.02+5.4-86.55;
+      double zz1 = barID[1]*10.8+(barID[1]-1)*0.02+5.4-86.55;
       
-      double xx3 = barID[3]*10.8+(barID[3]-1)*0.02+5.4;
-      double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4;
+      double xx3 = barID[3]*10.8+(barID[3]-1)*0.02+5.4-86.55;
+      double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4-86.55;
       
       
-      if (xx0>86.55&&xx3>86.55) {
+      if (xx0>0&&xx3>0) {
         xf12=xf12+1;
       }
       
-      if (xx0<86.55&&xx3<86.55) {
+      if (xx0<0&&xx3<0) {
             xf34=xf34+1;
       }
       
       
-      if (xx0>86.55&&xx3<86.55) {
+      if (xx0>0&&xx3<0) {
              xf14=xf14+1;
            }
            
-      if (xx0<86.55&&xx3>86.55) {
+      if (xx0<0&&xx3>0) {
                  xf23=xf23+1;
       }
          
       
       
       
-      if (zz1>86.55&&zz2>86.55) {
+      if (zz1>0&&zz2>0) {
         zf12=zf12+1;
       }
       
-      if (zz1<86.55&&zz2<86.55) {
+      if (zz1<0&&zz2<0) {
             zf34=zf34+1;
       }
       
       
-      if (zz1>86.55&&zz2<86.55) {
+      if (zz1>0&&zz2<0) {
              zf14=zf14+1;
            }
            
-      if (zz1<86.55&&zz2>86.55) {
+      if (zz1<0&&zz2>0) {
                  zf23=zf23+1;
       }
+      
+      
       
       Track_z_y->SetPoint(0,ycor_plane1,zz1);
       Track_z_y->SetPoint(1,ycor_plane2,zz2);
       Track_x_y->SetPoint(0,ycor_plane0,xx0);
       Track_x_y->SetPoint(1,ycor_plane3,xx3);
+     
+      Track_x_y->RemovePoint(2);
+      //Track_z_y->RemovePoint(0);
+
       
       plano0W->Fill(barID[0], PlaneMax[0]);
       plano2W->Fill(barID[2] , PlaneMax[1]);
@@ -361,37 +374,40 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       
     }
   
-    g=0;
-   
+    
+
   
+     Canvas->cd();
     
-    
-    
-   // Canvas->Divide(2,1);
-    
-    Canvas->cd();
+
+   
     Track_z_y->Fit("pol1");
     Track_z_y->SetMarkerStyle(20);
-    if (jentry==0) {
-      Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
-      Track_z_y->SetMaximum(173.5);
-      Track_z_y->GetXaxis()->SetLimits(-376.5,376.5);
-         Track_z_y->Draw("AP");
-    }
-    else Track_z_y->Draw("same P");
+   
+      
+      if (DrawGraph==1&&g==3) {
+        Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
+        Track_z_y->SetMaximum(87);
+        Track_z_y->SetMinimum(-87);
+        Track_z_y->GetXaxis()->SetLimits(-376.5,376.5);
+        Track_z_y->Draw("AP");
+      }
+      else if(g==3) Track_z_y->Draw("same P");
   
    Canvas2->cd();
     Track_x_y->Fit("pol1");
        Track_x_y->SetMarkerStyle(20);
-       if (jentry==0) {
+       if (DrawGraph==1&&g==3) {
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
-         Track_x_y->SetMaximum(173.5);
+         Track_x_y->SetMaximum(87);
+         Track_x_y->SetMinimum(-87);
          Track_x_y->GetXaxis()->SetLimits(-376.5,376.5);
             Track_x_y->Draw("AP");
        }
-       else Track_x_y->Draw("same P");
-    
-   
+       else if(g==3) Track_x_y->Draw("same P");
+ 
+ g=0;
+  
    int l=0;
    
   //min cut
