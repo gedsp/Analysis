@@ -391,11 +391,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
        }
        else Track_x_y->Draw("same P");
     
-    
-<<<<<<< HEAD
-
-=======
->>>>>>> 3d2b00afa3071c0dd221007e3f0070d981a37b2f
+   
    int l=0;
    
   //min cut
