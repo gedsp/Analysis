@@ -193,6 +193,10 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
    TCanvas * Canvas = new TCanvas();
    TCanvas * Canvas2 = new TCanvas();
   
+  double xf12=0,xf23=0,xf14=0,xf34=0;
+  double zf12=0,zf23=0,zf14=0,zf34=0;
+
+  
   for (Long64_t jentry=0; jentry<nentries;jentry++) { /* -----------------------------------       loop on events      ---------------------------------  */
  
    md->SetBranchAddress("crt_adc", crt_adc, &b_crt_adc);
@@ -308,9 +312,45 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4;
       
       
+      if (xx0>86.55&&xx3>86.55) {
+        xf12=xf12+1;
+      }
+      
+      if (xx0<86.55&&xx3<86.55) {
+            xf34=xf34+1;
+      }
+      
+      
+      if (xx0>86.55&&xx3<86.55) {
+             xf14=xf14+1;
+           }
+           
+      if (xx0<86.55&&xx3>86.55) {
+                 xf23=xf23+1;
+      }
+         
+      
+      
+      
+      if (zz1>86.55&&zz2>86.55) {
+        zf12=zf12+1;
+      }
+      
+      if (zz1<86.55&&zz2<86.55) {
+            zf34=zf34+1;
+      }
+      
+      
+      if (zz1>86.55&&zz2<86.55) {
+             zf14=zf14+1;
+           }
+           
+      if (zz1<86.55&&zz2>86.55) {
+                 zf23=zf23+1;
+      }
+      
       Track_z_y->SetPoint(0,ycor_plane1,zz1);
       Track_z_y->SetPoint(1,ycor_plane2,zz2);
-      
       Track_x_y->SetPoint(0,ycor_plane0,xx0);
       Track_x_y->SetPoint(1,ycor_plane3,xx3);
       
@@ -352,7 +392,10 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
        else Track_x_y->Draw("same P");
     
     
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3d2b00afa3071c0dd221007e3f0070d981a37b2f
    int l=0;
    
   //min cut
@@ -403,7 +446,17 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   
   Canvas->Print("lxplus/Track_z_ys.pdf");
   Canvas2->Print("lxplus/Track_x_ys.pdf");
-/*
+
+  double xxtot=xf12+xf14+xf23+xf34;
+  double zztot=zf12+zf14+zf23+zf34;
+  
+  cout << "\nProjection X Y \nfraction of tracks 1->2 " << xf12/xxtot << "\nfraction of tracks 2->3 " << xf23/xxtot << "\nfraction of tracks 3->4 " << xf34/xxtot << "\nfraction of tracks 1->4 " << xf14/xxtot << endl;
+  
+  cout << "\nProjection Z Y\nfraction of tracks 1->2 " << zf12/zztot << "\nfraction of tracks 2->3 " << zf23/zztot << "\nfraction of tracks 3->4 " << zf34/zztot << "\nfraction of tracks 1->4 " << zf14/zztot << endl;
+   
+  
+  
+  /*
   
   for (int i =0; i<13; i++) {
      
