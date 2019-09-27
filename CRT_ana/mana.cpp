@@ -183,11 +183,23 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   ofstream myfile;
   myfile.open ("DADOS.txt");
   int g=0;
+  double  ycor_plane0=-376.2;
+  double  ycor_plane1=-376;
+  double  ycor_plane2=376.2;
+  double  ycor_plane3=376;
+
   
-  for (Long64_t jentry=0; jentry<nentries;jentry++) {
+  
+   TCanvas * Canvas = new TCanvas();
+   TCanvas * Canvas2 = new TCanvas();
+  
+  for (Long64_t jentry=0; jentry<nentries;jentry++) { /* -----------------------------------       loop on events      ---------------------------------  */
  
    md->SetBranchAddress("crt_adc", crt_adc, &b_crt_adc);
   
+    
+    TGraph* Track_z_y = new TGraph(2);
+    TGraph* Track_x_y = new TGraph(2);
     
     int zeros,overflow;
     int barID[4];
@@ -289,16 +301,58 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       plano01->Fill(barID[0],barID[1]);
       plano23->Fill(barID[3],barID[2]);
      
+      double xx0 = barID[0]*10.8+(barID[0]-1)*0.02+5.4;
+      double zz1 = barID[1]*10.8+(barID[1]-1)*0.02+5.4;
+      
+      double xx3 = barID[3]*10.8+(barID[3]-1)*0.02+5.4;
+      double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4;
+      
+      
+      Track_z_y->SetPoint(0,ycor_plane1,zz1);
+      Track_z_y->SetPoint(1,ycor_plane2,zz2);
+      
+      Track_x_y->SetPoint(0,ycor_plane0,xx0);
+      Track_x_y->SetPoint(1,ycor_plane3,xx3);
+      
       plano0W->Fill(barID[0], PlaneMax[0]);
       plano2W->Fill(barID[2] , PlaneMax[1]);
       plano1W->Fill(barID[1], PlaneMax[2]);
       plano3W->Fill(barID[3], PlaneMax[3]);
       
     }
-    
+  
     g=0;
    
-   
+  
+    
+    
+    
+   // Canvas->Divide(2,1);
+    
+    Canvas->cd();
+    Track_z_y->Fit("pol1");
+    Track_z_y->SetMarkerStyle(20);
+    if (jentry==0) {
+      Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
+      Track_z_y->SetMaximum(173.5);
+      Track_z_y->GetXaxis()->SetLimits(-376.5,376.5);
+         Track_z_y->Draw("AP");
+    }
+    else Track_z_y->Draw("same P");
+  
+   Canvas2->cd();
+    Track_x_y->Fit("pol1");
+       Track_x_y->SetMarkerStyle(20);
+       if (jentry==0) {
+         Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
+         Track_x_y->SetMaximum(173.5);
+         Track_x_y->GetXaxis()->SetLimits(-376.5,376.5);
+            Track_x_y->Draw("AP");
+       }
+       else Track_x_y->Draw("same P");
+    
+    
+  */
    int l=0;
    
   //min cut
@@ -347,6 +401,8 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   cut.close();
   
   
+  Canvas->Print("lxplus/Track_z_ys.pdf");
+  Canvas2->Print("lxplus/Track_x_ys.pdf");
 /*
   
   for (int i =0; i<13; i++) {
@@ -368,7 +424,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   
   
 */
-  
+ /*
     TCanvas * c1 = new TCanvas();
 gStyle->SetGridStyle(3);
   //  gStyle->SetOptStat(0);
@@ -397,7 +453,7 @@ gStyle->SetGridStyle(3);
     c1->Print("lxplus/tprofile.pdf");
   
   
-  
+*/
   /*
   
 
@@ -467,7 +523,7 @@ gStyle->SetGridStyle(3);
   c2->Print("lxplus/Crt_adc_diff.pdf");
  */
  /**************************************************/
- 
+ /*
   TCanvas * c3 = new TCanvas();
 
   gStyle->SetOptStat(0);  
@@ -479,10 +535,10 @@ gStyle->SetGridStyle(3);
 
   c3->Print("lxplus/Crt_coincidencias_barras.pdf");
 
-
+*/
   /**************************************************/
 
-  TCanvas * c31 = new TCanvas();
+ /* TCanvas * c31 = new TCanvas();
 
   gStyle->SetOptStat(0);
  c31->Divide(2,2);
@@ -496,10 +552,10 @@ gStyle->SetGridStyle(3);
   plano3W->Draw("COLZ");
   c31->Print("lxplus/Crt_barras_weighted.pdf");
 
-
+*/
 
   /**************************************************/
-  
+/*
   TCanvas * c4 = new TCanvas();
   
   gStyle->SetOptStat(0);
@@ -522,11 +578,11 @@ gStyle->SetGridStyle(3);
   c4->Print("lxplus/Crt_adc_readout_fitted.pdf");
 
  
- 
+ */
 
   /**************************************************/
  
-   TCanvas * c5 = new TCanvas();
+ /*  TCanvas * c5 = new TCanvas();
    
    gStyle->SetOptStat(0);
    c5->Divide(2,2);
@@ -541,5 +597,5 @@ gStyle->SetGridStyle(3);
    c5->Print("lxplus/1stmaxvs2ndmax.pdf");
 
 
-
+*/
 }
