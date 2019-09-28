@@ -15,12 +15,12 @@ void mana(){
   
  //// md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
  
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");//
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
+//md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");//
+//md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
+//md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
 //  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
-//md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   double min_threshold_bar = 500;
   double max_threshold_PM= 4089;
@@ -34,6 +34,9 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
 
     Int_t           crt_adc[4][32];
      TBranch        *b_crt_adc;
+    TBranch        *b_crt_ToF;   //!
+     Float_t         crt_ToF;
+  
   
   Long64_t nbytes = 0, nb = 0;
 
@@ -177,6 +180,17 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   V_plano_Max.push_back(p3_Max);
   
   
+  
+  
+  //tof plot
+  
+  TH1F * tof = new TH1F("TOF", "TOF",  400,-200,200);
+  tof->SetTitle("TOF; TOF; # events");
+
+  
+  
+  
+  
   ofstream cut;
   cut.open ("DADOS_cut.txt");
   
@@ -195,12 +209,14 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   
   double xf12=0,xf23=0,xf14=0,xf34=0;
   double zf12=0,zf23=0,zf14=0,zf34=0;
-  int iOkEvent=0,DrawGraph=0;
+  int iOkEvent=0,DrawGraph=0,SkipEvent=0;
   
   for (Long64_t jentry=0; jentry<nentries;jentry++) { /* -----------------------------------       loop on events      ---------------------------------  */
  
-   md->SetBranchAddress("crt_adc", crt_adc, &b_crt_adc);
-  
+ 
+    md->SetBranchAddress("crt_adc", crt_adc, &b_crt_adc);
+    md->SetBranchAddress("crt_ToF", &crt_ToF, &b_crt_ToF);
+
     
     TGraph* Track_z_y = new TGraph(2);
     TGraph* Track_x_y = new TGraph(2);
@@ -298,10 +314,20 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       
       V_1maxvs2max[k]->Fill(PlaneSignalTot[k][15],PlaneSignalTot[k][14]);
       
+      double dif=PlaneSignalTot[k][15]-PlaneSignalTot[k][14];
+      
+      
+    
+      if(dif<2500.){
+        
+        SkipEvent++;
+      }
+    
+      cout << "dif " << dif << " skiped event " << SkipEvent << endl;
       
     }
   
-    if (g==3) {
+    if (g==4&&SkipEvent==0) {
       iOkEvent++;
     
       if (iOkEvent==1) {
@@ -311,6 +337,10 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       
       plano01->Fill(barID[0],barID[1]);
       plano23->Fill(barID[3],barID[2]);
+      
+      
+      tof->Fill(crt_ToF);
+      
      
       double xx0 = barID[0]*10.8+(barID[0]-1)*0.02+5.4-86.55;
       double zz1 = barID[1]*10.8+(barID[1]-1)*0.02+5.4-86.55;
@@ -374,39 +404,34 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       
     }
   
-    
-
   
      Canvas->cd();
-    
-
-   
-    Track_z_y->Fit("pol1");
+   Track_z_y->Fit("pol1");
     Track_z_y->SetMarkerStyle(20);
     Track_z_y->SetLineColorAlpha(kRed,0.50);
      Track_z_y->SetLineWidth(1);
-      if (DrawGraph==1&&g==3) {
+      if (DrawGraph==1&&g==4&&SkipEvent==0) {
         Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
         Track_z_y->SetMaximum(87);
         Track_z_y->SetMinimum(-87);
         Track_z_y->GetXaxis()->SetLimits(-376.5,376.5);
         Track_z_y->Draw("AP");
       }
-      else if(g==3) Track_z_y->Draw("same P");
+      else if(g==4&&SkipEvent==0) Track_z_y->Draw("same P");
   
    Canvas2->cd();
-    Track_x_y->Fit("pol1");
+  Track_x_y->Fit("pol1");
        Track_x_y->SetMarkerStyle(20);
-       if (DrawGraph==1&&g==3) {
+       if (DrawGraph==1&&g==4&&SkipEvent==0) {
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
          Track_x_y->SetMaximum(87);
          Track_x_y->SetMinimum(-87);
          Track_x_y->GetXaxis()->SetLimits(-376.5,376.5);
             Track_x_y->Draw("AP");
        }
-       else if(g==3) Track_x_y->Draw("same P");
+       else if(g==4&&SkipEvent==0) Track_x_y->Draw("same P");
  
- g=0;
+ g=0,SkipEvent=0;
   
    int l=0;
    
@@ -456,8 +481,8 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
   cut.close();
   
   
-  Canvas->Print("lxplus/Track_z_ys.pdf");
-  Canvas2->Print("lxplus/Track_x_ys.pdf");
+  Canvas->Print("local/Track_z_ys.pdf");
+  Canvas2->Print("local/Track_x_ys.pdf");
 
   double xxtot=xf12+xf14+xf23+xf34;
   double zztot=zf12+zf14+zf23+zf34;
@@ -515,7 +540,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("lxplus/tprofile.pdf");
+    c1->Print("local/tprofile.pdf");
   
   
 */
@@ -585,10 +610,10 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("lxplus/Crt_adc_diff.pdf");
+  c2->Print("local/Crt_adc_diff.pdf");
  */
  /**************************************************/
- /*
+ 
   TCanvas * c3 = new TCanvas();
 
   gStyle->SetOptStat(0);  
@@ -598,10 +623,17 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("lxplus/Crt_coincidencias_barras.pdf");
+  c3->Print("local/Crt_coincidencias_barras.pdf");
 
-*/
+
   /**************************************************/
+  
+  
+  TCanvas * c7 = new TCanvas();
+  tof->Draw("hist");
+  c7->Print("local/tof.pdf");
+  
+   /**************************************************/
 
  /* TCanvas * c31 = new TCanvas();
 
@@ -615,7 +647,7 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c31->Print("lxplus/Crt_barras_weighted.pdf");
+  c31->Print("local/Crt_barras_weighted.pdf");
 
 */
 
@@ -640,7 +672,7 @@ gStyle->SetGridStyle(3);
   V_plano[2]->Draw("hist");
   c4->cd(4);
   V_plano[3]->Draw("hist");
-  c4->Print("lxplus/Crt_adc_readout_fitted.pdf");
+  c4->Print("local/Crt_adc_readout_fitted.pdf");
 
  
  */
@@ -659,7 +691,7 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("lxplus/1stmaxvs2ndmax.pdf");
+   c5->Print("local/1stmaxvs2ndmax.pdf");
 
 
 */
