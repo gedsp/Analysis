@@ -11,15 +11,40 @@
 void mana(){
 
   TChain * md = new TChain("midas_data");
- // md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/*_reprocessed.root");
-  
- //// md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001399_reprocessed.root");
- 
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");//
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
-md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");
 
-//  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001399_reprocessed.root");
+ //lxpluss
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001337_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001353_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001354_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001402_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001403_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001404_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001406_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001601_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001608_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001609_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001610_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001611_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001612_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001613_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001614_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001615_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001616_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001617_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001618_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001666_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");//
+
+
+  
+  
+  
+ //locall
 //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   double min_threshold_bar = 500;
@@ -341,12 +366,13 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
       
       tof->Fill(crt_ToF);
       
-     
+     // CRT ARE SHIFTED SO NEED TO ADD A SHIFT IN ZZ
+      
       double xx0 = barID[0]*10.8+(barID[0]-1)*0.02+5.4-86.55;
-      double zz1 = barID[1]*10.8+(barID[1]-1)*0.02+5.4-86.55;
+      double zz1 = barID[1]*10.8+(barID[1]-1)*0.02+5.4-86.55+15;
       
       double xx3 = barID[3]*10.8+(barID[3]-1)*0.02+5.4-86.55;
-      double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4-86.55;
+      double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4-86.55-90;
       
       
       if (xx0>0&&xx3>0) {
@@ -412,9 +438,9 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
      Track_z_y->SetLineWidth(1);
       if (DrawGraph==1&&g==4&&SkipEvent==0) {
         Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
-        Track_z_y->SetMaximum(87);
-        Track_z_y->SetMinimum(-87);
-        Track_z_y->GetXaxis()->SetLimits(-376.5,376.5);
+        Track_z_y->SetMaximum(103);
+        Track_z_y->SetMinimum(-177);
+        Track_z_y->GetXaxis()->SetLimits(-377,377);
         Track_z_y->Draw("AP");
       }
       else if(g==4&&SkipEvent==0) Track_z_y->Draw("same P");
@@ -426,7 +452,7 @@ md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output0
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
          Track_x_y->SetMaximum(87);
          Track_x_y->SetMinimum(-87);
-         Track_x_y->GetXaxis()->SetLimits(-376.5,376.5);
+         Track_x_y->GetXaxis()->SetLimits(-377,377);
             Track_x_y->Draw("AP");
        }
        else if(g==4&&SkipEvent==0) Track_x_y->Draw("same P");
