@@ -469,30 +469,30 @@ void mana(){
   
   
      Canvas->cd();
-   //Track_z_y->Fit("pol1");
+   Track_z_y->Fit("pol1");
     Track_z_y->SetMarkerStyle(20);
     Track_z_y->SetLineColorAlpha(kRed,0.50);
      Track_z_y->SetLineWidth(1);
-      if (DrawGraph==1&&g==4&&SkipEvent==0) {
+      if (DrawGraph==1&&g==4&&SkipEvent==0&&crt_ToF>0) {
         Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
         Track_z_y->SetMaximum(103);
         Track_z_y->SetMinimum(-177);
         Track_z_y->GetXaxis()->SetLimits(-377,377);
         Track_z_y->Draw("AP");
       }
-      else if(g==4&&SkipEvent==0) Track_z_y->Draw("same P");
+      else if(g==4&&SkipEvent==0&&crt_ToF>0) Track_z_y->Draw("same P");
   
    Canvas2->cd();
-  //Track_x_y->Fit("pol1");
+  Track_x_y->Fit("pol1");
        Track_x_y->SetMarkerStyle(20);
-       if (DrawGraph==1&&g==4&&SkipEvent==0) {
+       if (DrawGraph==1&&g==4&&SkipEvent==0&&crt_ToF>0) {
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
          Track_x_y->SetMaximum(87);
          Track_x_y->SetMinimum(-87);
          Track_x_y->GetXaxis()->SetLimits(-377,377);
             Track_x_y->Draw("AP");
        }
-       else if(g==4&&SkipEvent==0) Track_x_y->Draw("same P");
+       else if(g==4&&SkipEvent==0&&crt_ToF>0) Track_x_y->Draw("same P");
  
   
     
