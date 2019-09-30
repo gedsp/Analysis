@@ -368,7 +368,7 @@ void mana(){
   
     
     
-    if (g==4&&SkipEvent==0) {
+    if (g==4&&SkipEvent==0&&crt_ToF>0) {
       iOkEvent++;
 
       if (iOkEvent==1) {
@@ -405,12 +405,12 @@ void mana(){
       
       
       
-    if (crt_ToF>0) {
+   
          disp->Fill(PlaneMax10,PlaneMax23);
           tof->Fill(crt_ToF);
        coor_spherical->Fill(180*theta/M_PI);
        coor_costheta->Fill(cos(theta));
-       }
+       
       
       
       
@@ -548,8 +548,8 @@ void mana(){
   cut.close();
   
   
-  Canvas->Print("lxplus/Track_z_ys.pdf");
-  Canvas2->Print("lxplus/Track_x_ys.pdf");
+  Canvas->Print("lxplus_tof_M_0/Track_z_ys.pdf");
+  Canvas2->Print("lxplus_tof_M_0/Track_x_ys.pdf");
   
   double xxtot=xf12+xf14+xf23+xf34;
   double zztot=zf12+zf14+zf23+zf34;
@@ -607,7 +607,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("lxplus/tprofile.pdf");
+    c1->Print("lxplus_tof_M_0/tprofile.pdf");
   
   
 */
@@ -677,7 +677,7 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("lxplus/Crt_adc_diff.pdf");
+  c2->Print("lxplus_tof_M_0/Crt_adc_diff.pdf");
  */
  /**************************************************/
  
@@ -690,7 +690,7 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("lxplus/Crt_coincidencias_barras.pdf");
+  c3->Print("lxplus_tof_M_0/Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
@@ -698,13 +698,13 @@ gStyle->SetGridStyle(3);
   
   TCanvas * c7 = new TCanvas();
   tof->Draw("hist");
-  c7->Print("lxplus/tof.pdf");
+  c7->Print("lxplus_tof_M_0/tof.pdf");
   
    /**************************************************/
 
   TCanvas * c8 = new TCanvas();
    disp->Draw("COLZ");
-   c8->Print("lxplus/disp.pdf");
+   c8->Print("lxplus_tof_M_0/disp.pdf");
    
     /**************************************************/
   
@@ -717,7 +717,7 @@ gStyle->SetGridStyle(3);
    c9->cd(2);
    coor_costheta->SetMarkerStyle(29);
   coor_costheta->Draw("p");
-   c9->Print("lxplus/costheta.pdf");
+   c9->Print("lxplus_tof_M_0/costheta.pdf");
    
     /**************************************************/
   
@@ -733,7 +733,7 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c31->Print("lxplus/Crt_barras_weighted.pdf");
+  c31->Print("lxplus_tof_M_0/Crt_barras_weighted.pdf");
 
 */
 
@@ -758,7 +758,7 @@ gStyle->SetGridStyle(3);
   V_plano[2]->Draw("hist");
   c4->cd(4);
   V_plano[3]->Draw("hist");
-  c4->Print("lxplus/Crt_adc_readout_fitted.pdf");
+  c4->Print("lxplus_tof_M_0/Crt_adc_readout_fitted.pdf");
 
  
  */
@@ -777,7 +777,7 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("lxplus/1stmaxvs2ndmax.pdf");
+   c5->Print("lxplus_tof_M_0/1stmaxvs2ndmax.pdf");
 
 
 */
