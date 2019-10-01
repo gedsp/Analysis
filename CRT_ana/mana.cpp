@@ -14,7 +14,7 @@ void mana(){
 
  //lxxxpluss
   
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
+ /* md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001337_reprocessed.root");//
@@ -40,13 +40,13 @@ void mana(){
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");//
-
+*/
 
   
   
   
  //looocall
-//md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   double min_threshold_bar = 500;
   double max_threshold_PM= 4089;
@@ -122,7 +122,7 @@ void mana(){
   for (int j =0; j<4; j++) {
        
        
-    p_tot_cut =new TH1F(Form("plano_%d_cutted",j), "plano0", 10000,0.1,8500);
+    p_tot_cut =new TH1F(Form("plano_%d_cutted",j), "plano0", 60,0.1,8500);
     p_tot_cut->SetTitle(Form("Plane %d; S_{B}; # events",j));
   
     p_1maxvs2max =new TH2F(Form("plano_%d_1maxvs2max",j), "plano0", 8000,0.1,8500,8000,0.1,8500);
@@ -138,13 +138,24 @@ void mana(){
   // tprofile
   vector<TProfile*>  plano_cut_hprof;
   TProfile* hprof;
+ 
+  // # bar w events
+   vector<TH1F*>  V_bars;
+   
+  
   for (int j =0; j<4; j++) {
        
        
-      hprof =new TProfile(Form("plano_%d",j), "plano0", 3000,0.1,3000,0.,16.);
-      hprof->SetTitle(Form("Plane %d; Cut Value; # active bars",j));
+    hprof =new TProfile(Form("plano_%d",j), "plano0", 3000,0.1,3000,0.,16.);
+    hprof->SetTitle(Form("Plane %d; Cut Value; # active bars",j));
        
-       plano_cut_hprof.push_back(hprof);
+    TH1F* barwEvents = new TH1F(Form("barwEvents_%d",j), " barwEvents", 16,0.1,16);
+    barwEvents->SetTitle("Distribuition # bar with events; # bar with events; # events");
+    
+   
+    V_bars.push_back(barwEvents);
+    
+    plano_cut_hprof.push_back(hprof);
 
      }
   
@@ -213,6 +224,11 @@ void mana(){
   TH1F * tof = new TH1F("TOF", "TOF",  400,-200,200);
   tof->SetTitle("TOF; TOF; # events");
 
+  //L vs tof
+  
+  TH2F* LvsTOF = new TH2F("LvsTOF", "LvsTOF" , 50, 0.0,50.0,100, 740,840.0);
+  LvsTOF->SetTitle("L vs TOF; TOF; L (cm)");
+  
   
   //dispertion
   
@@ -222,11 +238,16 @@ void mana(){
   
   //costheta
   
-  TH1F* coor_spherical = new TH1F("theta", "theta",  100,0,180);;
+  TH1F* coor_spherical = new TH1F("theta", "theta",  25,60,95);
   coor_spherical->SetTitle("Distribuition #theta; #theta; # events");
   TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  100,-1,1);;
    coor_costheta->SetTitle("Distribuition cos(#theta); cos(#theta); # events");
   
+  TH2F * costhetavsphi = new  TH2F("costhetavsphi", "costhetavsphi" , 7, -3.1415926536,3.1415926536,10,-1,1);
+  costhetavsphi->SetTitle("Distribuition cos(#theta vs #phi); #phi (rad); cos(#theta)");
+  
+  
+ 
   
   ofstream cut;
   cut.open ("DADOS_cut.txt");
@@ -300,7 +321,7 @@ void mana(){
             
             if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
             {
-               V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
+               //V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
             }
             
             V_plano[k]->Fill(PlaneSignalTot[k][b]);
@@ -347,11 +368,15 @@ void mana(){
         
       }
 
+      
+      
+      
       // GET 1ST MAX VS 2ND MAX
       
-        int n = sizeof(PlaneSignalTot[k])/sizeof(PlaneSignalTot[k][0]);
       
-        sort(PlaneSignalTot[k], PlaneSignalTot[k]+n);
+      int n = sizeof(PlaneSignalTot[k])/sizeof(PlaneSignalTot[k][0]);
+      
+      sort(PlaneSignalTot[k], PlaneSignalTot[k]+n);
       
       V_1maxvs2max[k]->Fill(PlaneSignalTot[k][15],PlaneSignalTot[k][14]);
       
@@ -367,8 +392,10 @@ void mana(){
     }
   
     
-    
-    if (g==4&&SkipEvent==0&&crt_ToF>0) {
+    int f=0;
+    if (g==4&&SkipEvent==0) {
+      
+      
       iOkEvent++;
 
       if (iOkEvent==1) {
@@ -384,12 +411,26 @@ void mana(){
       double PlaneMax10 = abs(PlaneMax[1]-PlaneMax[0]);
       double PlaneMax23 = abs(PlaneMax[2]-PlaneMax[3]);
 
-     // cout << "PlaneMax10  " << PlaneMax10 << "\tP1 = " << PlaneMax[1] <<"\t P0 = " << PlaneMax[0] << "\n PlaneMax23 " << PlaneMax23 <<  "\tP2 = " << PlaneMax[2] <<"\t P3 = " << PlaneMax[3] << endl;
     
+      for ( int k =0; k<4; k++) {   // loop on planes
+         
+           for (int b=0;b<16; b++) { //loop on SiPM
    
+                 if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
+                           {
+                             f++;
+                              V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
+                           }
+           }
+        
+        
+        if (f!=0) {
+               V_bars[k]->Fill(f);
+             }
+        
+      }
       
-      
-      
+     
    
       
      // CRT ARE SHIFTED SO NEED TO ADD A SHIFT IN ZZ
@@ -401,18 +442,23 @@ void mana(){
       double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4-86.55-90;
       
       
-      double theta= atan( ( abs(ycor_plane1)+ycor_plane2 )/ (zz1-zz2) );
+      double phi=atan( (ycor_plane0-ycor_plane3)/(xx0-xx3) );
+    
       
-      
-      
+      double L=sqrt((xx0-xx3)*(xx0-xx3)+(ycor_plane0-ycor_plane3)*(ycor_plane0-ycor_plane3)+(zz1-zz2)*( zz1-zz2 ));
    
-         disp->Fill(PlaneMax10,PlaneMax23);
-          tof->Fill(crt_ToF);
+      
+      double theta= acos(  ( zz1-zz2 )  / L);
+      
+      costhetavsphi->Fill(phi,cos(theta));
+      
+       disp->Fill(PlaneMax10,PlaneMax23);
+       tof->Fill(crt_ToF);
        coor_spherical->Fill(180*theta/M_PI);
        coor_costheta->Fill(cos(theta));
        
-      
-      
+      LvsTOF->Fill(crt_ToF,L);
+
       
       if (xx0>0&&xx3>0) {
         xf12=xf12+1;
@@ -428,7 +474,7 @@ void mana(){
            }
            
       if (xx0<0&&xx3>0) {
-                 xf23=xf23+1;
+          xf23=xf23+1;
       }
          
       
@@ -469,7 +515,7 @@ void mana(){
   
   
      Canvas->cd();
-   Track_z_y->Fit("pol1");
+//   Track_z_y->Fit("pol1");
     Track_z_y->SetMarkerStyle(20);
     Track_z_y->SetLineColorAlpha(kRed,0.50);
      Track_z_y->SetLineWidth(1);
@@ -483,7 +529,7 @@ void mana(){
       else if(g==4&&SkipEvent==0&&crt_ToF>0) Track_z_y->Draw("same P");
   
    Canvas2->cd();
-  Track_x_y->Fit("pol1");
+ // Track_x_y->Fit("pol1");
        Track_x_y->SetMarkerStyle(20);
        if (DrawGraph==1&&g==4&&SkipEvent==0&&crt_ToF>0) {
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
@@ -548,8 +594,8 @@ void mana(){
   cut.close();
   
   
-  Canvas->Print("lxplus_tof_M_0/Track_z_ys.pdf");
-  Canvas2->Print("lxplus_tof_M_0/Track_x_ys.pdf");
+  Canvas->Print("local/Track_z_ys.pdf");
+  Canvas2->Print("local/Track_x_ys.pdf");
   
   double xxtot=xf12+xf14+xf23+xf34;
   double zztot=zf12+zf14+zf23+zf34;
@@ -607,7 +653,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("lxplus_tof_M_0/tprofile.pdf");
+    c1->Print("local/tprofile.pdf");
   
   
 */
@@ -677,7 +723,7 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("lxplus_tof_M_0/Crt_adc_diff.pdf");
+  c2->Print("local/Crt_adc_diff.pdf");
  */
  /**************************************************/
  
@@ -690,7 +736,7 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("lxplus_tof_M_0/Crt_coincidencias_barras.pdf");
+  c3->Print("local/Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
@@ -698,13 +744,27 @@ gStyle->SetGridStyle(3);
   
   TCanvas * c7 = new TCanvas();
   tof->Draw("hist");
-  c7->Print("lxplus_tof_M_0/tof.pdf");
+  c7->Print("local/tof.pdf");
   
    /**************************************************/
 
   TCanvas * c8 = new TCanvas();
    disp->Draw("COLZ");
-   c8->Print("lxplus_tof_M_0/disp.pdf");
+   c8->Print("local/disp.pdf");
+   
+    /**************************************************/
+  
+  TCanvas * c12 = new TCanvas();
+   c12->Divide(2,2);
+    c12->cd(1);
+    V_bars[0]->Draw("hist");
+    c12->cd(2);
+    V_bars[0]->Draw("hist");
+    c12->cd(3);
+    V_bars[0]->Draw("hist");
+    c12->cd(4);
+    V_bars[0]->Draw("hist");
+   c12->Print("local/barswevents.pdf");
    
     /**************************************************/
   
@@ -712,14 +772,34 @@ gStyle->SetGridStyle(3);
   TCanvas * c9 = new TCanvas();
   c9->Divide(2,1);
   c9->cd(1);
-  coor_spherical->SetMarkerStyle(29);
-   coor_spherical->Draw("p");
+  //coor_spherical->SetMarkerStyle(29);
+   coor_spherical->Draw("hist");
    c9->cd(2);
-   coor_costheta->SetMarkerStyle(29);
-  coor_costheta->Draw("p");
-   c9->Print("lxplus_tof_M_0/costheta.pdf");
+ //  coor_costheta->SetMarkerStyle(29);
+  coor_costheta->Draw("hist");
+   c9->Print("local/costheta.pdf");
    
+  
+   /**************************************************/
+
+   TCanvas * c10 = new TCanvas();
+   LvsTOF->Draw("COLZ");
+   c10->Print("local/LVSTOF.pdf");
+   
+
+  
+  
     /**************************************************/
+
+   TCanvas * c11 = new TCanvas();
+   costhetavsphi->Draw("COLZ");
+   c11->Print("local/costhetavsphi.pdf");
+   
+
+  
+  
+    /**************************************************/
+  
   
  /* TCanvas * c31 = new TCanvas();
 
@@ -733,39 +813,39 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c31->Print("lxplus_tof_M_0/Crt_barras_weighted.pdf");
+  c31->Print("local/Crt_barras_weighted.pdf");
 
 */
 
   /**************************************************/
-/*
+
   TCanvas * c4 = new TCanvas();
   
   gStyle->SetOptStat(0);
   c4->Divide(2,2);
   c4->cd(1);
   
-  TF1 *g5 = new TF1("m1","gaus",200,500);
+ /* TF1 *g5 = new TF1("m1","gaus",200,500);
   g5->SetLineColor(kRed+1);
   g5->SetLineWidth(2);
   
-    V_plano[0]->Fit(g5,"R");
+    V_plano[0]->Fit(g5,"R");*/
   
- // V_plano_tot_cut[0]->Draw("hist");
+  V_plano_tot_cut[0]->Draw("hist");
   c4->cd(2);
-  V_plano[1]->Draw("hist");
+  V_plano_tot_cut[1]->Draw("hist");
   c4->cd(3);
-  V_plano[2]->Draw("hist");
+  V_plano_tot_cut[2]->Draw("hist");
   c4->cd(4);
-  V_plano[3]->Draw("hist");
-  c4->Print("lxplus_tof_M_0/Crt_adc_readout_fitted.pdf");
+   V_plano_tot_cut[3]->Draw("hist");
+  c4->Print("local/Crt_V_plano_tot_cut[0].pdf");
 
  
- */
+ 
 
   /**************************************************/
  
- /*  TCanvas * c5 = new TCanvas();
+  TCanvas * c5 = new TCanvas();
    
    gStyle->SetOptStat(0);
    c5->Divide(2,2);
@@ -777,8 +857,8 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("lxplus_tof_M_0/1stmaxvs2ndmax.pdf");
+   c5->Print("local/1stmaxvs2ndmax.pdf");
 
 
-*/
+
 }
