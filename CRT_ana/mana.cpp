@@ -13,6 +13,7 @@ void mana(){
   TChain * md = new TChain("midas_data");
 
  //lxxxpluss
+
   
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
@@ -141,7 +142,11 @@ void mana(){
  
   // # bar w events
    vector<TH1F*>  V_bars;
-   
+  TH1F* barwEvents;
+ 
+  //S1+s2 vs coord
+  vector<TH2F*>  V_sB_coor;
+  TH2F* sbcoor;
   
   for (int j =0; j<4; j++) {
        
@@ -149,14 +154,17 @@ void mana(){
     hprof =new TProfile(Form("plano_%d",j), "plano0", 3000,0.1,3000,0.,16.);
     hprof->SetTitle(Form("Plane %d; Cut Value; # active bars",j));
        
-    TH1F* barwEvents = new TH1F(Form("barwEvents_%d",j), " barwEvents", 16,0.1,16);
+    barwEvents = new TH1F(Form("barwEvents_%d",j), " barwEvents", 16,0.1,16);
     barwEvents->SetTitle("Distribuition # bar with events; # bar with events; # events");
     
    
-    V_bars.push_back(barwEvents);
+    sbcoor = new TH2F(Form("sbcoor_%d",j), "sbcoor",  100,0.1,8500,100,-178,115);
+    sbcoor->SetTitle(Form("Plane %d; S_{B}; Distante to PM (cm)",j));
     
+    V_bars.push_back(barwEvents);
     plano_cut_hprof.push_back(hprof);
-
+    V_sB_coor.push_back(sbcoor);
+    
      }
   
   
@@ -412,23 +420,7 @@ void mana(){
       double PlaneMax23 = abs(PlaneMax[2]-PlaneMax[3]);
 
     
-      for ( int k =0; k<4; k++) {   // loop on planes
-         
-           for (int b=0;b<16; b++) { //loop on SiPM
-   
-                 if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
-                           {
-                             f++;
-                              V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
-                           }
-           }
-        
-        
-        if (f!=0) {
-               V_bars[k]->Fill(f);
-             }
-        
-      }
+    
       
      
    
@@ -452,13 +444,39 @@ void mana(){
       
       costhetavsphi->Fill(phi,cos(theta));
       
-       disp->Fill(PlaneMax10,PlaneMax23);
-       tof->Fill(crt_ToF);
-       coor_spherical->Fill(180*theta/M_PI);
-       coor_costheta->Fill(cos(theta));
+      disp->Fill(PlaneMax10,PlaneMax23);
+      tof->Fill(crt_ToF);
+      coor_spherical->Fill(180*theta/M_PI);
+      coor_costheta->Fill(cos(theta));
        
       LvsTOF->Fill(crt_ToF,L);
 
+      
+      for ( int k =0; k<4; k++) {   // loop on planes
+             
+               for (int b=0;b<16; b++) { //loop on SiPM
+       
+                     if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
+                               {
+                                 f++;
+                                  V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
+                               }
+               }
+            
+            
+            if (f!=0) {
+                   V_bars[k]->Fill(f);
+             
+            
+            }
+        
+          }
+      
+      
+      V_sB_coor[0]->Fill(PlaneMax[0],zz1);
+      V_sB_coor[1]->Fill(PlaneMax[1],xx0);
+      V_sB_coor[2]->Fill(PlaneMax[2],xx3);
+      V_sB_coor[3]->Fill(PlaneMax[3],zz2);
       
       if (xx0>0&&xx3>0) {
         xf12=xf12+1;
@@ -768,6 +786,20 @@ gStyle->SetGridStyle(3);
    
     /**************************************************/
   
+  
+  TCanvas * c13 = new TCanvas();
+    c13->Divide(2,2);
+     c13->cd(1);
+     V_sB_coor[0]->Draw("COLZ");
+     c13->cd(2);
+     V_sB_coor[1]->Draw("COLZ");
+     c13->cd(3);
+     V_sB_coor[2]->Draw("COLZ");
+     c13->cd(4);
+     V_sB_coor[3]->Draw("COLZ");
+    c13->Print("lxplus/SBvsdistance.pdf");
+    
+     /**************************************************/
   
   TCanvas * c9 = new TCanvas();
   c9->Divide(2,1);
