@@ -14,7 +14,7 @@ void mana(){
 
  //lxxxpluss
 
-  
+
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
@@ -144,9 +144,6 @@ void mana(){
    vector<TH1F*>  V_bars;
   TH1F* barwEvents;
  
-  //S1+s2 vs coord
-  vector<TH2F*>  V_sB_coor;
-  TH2F* sbcoor;
   
   for (int j =0; j<4; j++) {
        
@@ -158,15 +155,31 @@ void mana(){
     barwEvents->SetTitle("Distribuition # bar with events; # bar with events; # events");
     
    
-    sbcoor = new TH2F(Form("sbcoor_%d",j), "sbcoor",  100,0.1,8500,100,-178,115);
-    sbcoor->SetTitle(Form("Plane %d; S_{B}; Distante to PM (cm)",j));
+   
     
     V_bars.push_back(barwEvents);
     plano_cut_hprof.push_back(hprof);
-    V_sB_coor.push_back(sbcoor);
+   
     
      }
   
+  
+  //S1+s2 vs coord
+  vector<TH2F*>  V_sB_coor;
+  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,100,-72,111);
+  sbcoor0->SetTitle("Plane 0; S_{B}; Distante to PM in Z (cm)");
+   V_sB_coor.push_back(sbcoor0);
+  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,100,-87,87);
+  sbcoor1->SetTitle("Plane 1; S_{B}; Distante to PM in X (cm)");
+   V_sB_coor.push_back(sbcoor1);
+  
+  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,100,-87,87);
+  sbcoor2->SetTitle("Plane 2; S_{B}; Distante to PM in X (cm)");
+   V_sB_coor.push_back(sbcoor2);
+  
+  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,100,-177,-4);
+   sbcoor3->SetTitle("Plane 3; S_{B}; Distante to PM in Z (cm)");
+    V_sB_coor.push_back(sbcoor3);
   
   //signal diff
   
