@@ -45,7 +45,6 @@ void mana(){
 
   
   
-  
  //looocall
 //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
@@ -166,18 +165,18 @@ void mana(){
   
   //S1+s2 vs coord
   vector<TH2F*>  V_sB_coor;
-  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,100,-72,111);
+  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,-72,111);
   sbcoor0->SetTitle("Plane 0; S_{B}; Distante to PM in Z (cm)");
    V_sB_coor.push_back(sbcoor0);
-  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,100,-87,87);
+  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,-87,87);
   sbcoor1->SetTitle("Plane 1; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor1);
   
-  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,100,-87,87);
+  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,-87,87);
   sbcoor2->SetTitle("Plane 2; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor2);
   
-  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,100,-177,-4);
+  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,-177,-4);
    sbcoor3->SetTitle("Plane 3; S_{B}; Distante to PM in Z (cm)");
     V_sB_coor.push_back(sbcoor3);
   
@@ -264,7 +263,7 @@ void mana(){
   TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  100,-1,1);;
    coor_costheta->SetTitle("Distribuition cos(#theta); cos(#theta); # events");
   
-  TH2F * costhetavsphi = new  TH2F("costhetavsphi", "costhetavsphi" , 7, -3.1415926536,3.1415926536,10,-1,1);
+  TH2F * costhetavsphi = new  TH2F("costhetavsphi", "costhetavsphi" , 10, -1.6,1.6,40,-0.2,0.4);
   costhetavsphi->SetTitle("Distribuition cos(#theta vs #phi); #phi (rad); cos(#theta)");
   
   
