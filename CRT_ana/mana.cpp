@@ -14,7 +14,7 @@ void mana(){
 
  //lxxxpluss
 
-
+/*
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
@@ -42,11 +42,11 @@ void mana(){
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");//
 
-
+*/
   
   
  //looocall
-//md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   double min_threshold_bar = 500;
   double max_threshold_PM= 4089;
@@ -252,16 +252,26 @@ void mana(){
   
   //dispertion
   
-  TH2F* disp = new TH2F("plane_max", "plane" , 100, 0.0,8000,100, 0.0,8000);
+  TH2F* disp = new TH2F("plane_max", "plane" , 200, -7000,7000,200,-7000,7000);
   disp->SetTitle("#Delta Signal P1-P0 vs P2-P3; P1-P0; P2-P3");
+  TH1F* disp01 = new TH1F("disp01", "disp01", 200, -7000,7000);
+  disp01->SetTitle("#Delta Signal P1-P0; P1-P0; # events");
+  TH1F* disp23 = new TH1F("dip23", "23a", 200,-7000,7000);
+  disp23->SetTitle("#Delta Signal P2-P3;  P2-P3; # events");
   
-  
+
   //costheta
   
-  TH1F* coor_spherical = new TH1F("theta", "theta",  25,60,95);
+  TH1F* coor_spherical = new TH1F("theta", "theta",  25,60,100);
   coor_spherical->SetTitle("Distribuition #theta; #theta; # events");
-  TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  100,-1,1);;
-   coor_costheta->SetTitle("Distribuition cos(#theta); cos(#theta); # events");
+  TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  100,-1,1);
+  coor_costheta->SetTitle("Distribuition cos(#theta); cos(#theta); # events");
+  TH1F* coor_spherical_tof_m0 = new TH1F("theta2", "theta2",  25,60,100);
+  TH1F* coor_costhetatof_m0 = new TH1F("costheta2", "TCostheta2",  100,-1,1);
+
+  
+  
+  
   
   TH2F * costhetavsphi = new  TH2F("costhetavsphi", "costhetavsphi" , 10, -1.6,1.6,40,-0.2,0.4);
   costhetavsphi->SetTitle("Distribuition cos(#theta vs #phi); #phi (rad); cos(#theta)");
@@ -341,7 +351,7 @@ void mana(){
             
             if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
             {
-               //V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
+               V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
             }
             
             V_plano[k]->Fill(PlaneSignalTot[k][b]);
@@ -428,15 +438,15 @@ void mana(){
       
 
       
-      double PlaneMax10 = abs(PlaneMax[1]-PlaneMax[0]);
-      double PlaneMax23 = abs(PlaneMax[2]-PlaneMax[3]);
+      double PlaneMax10 = PlaneMax[1]-PlaneMax[0];
+      double PlaneMax23 = PlaneMax[2]-PlaneMax[3];
 
     
     
       
-     
-   
-      
+      disp->Fill(PlaneMax10,PlaneMax23);
+      disp01->Fill(PlaneMax10);
+      disp23->Fill(PlaneMax23);
      // CRT ARE SHIFTED SO NEED TO ADD A SHIFT IN ZZ
       
       double xx0 = barID[0]*10.8+(barID[0]-1)*0.02+5.4-86.55;
@@ -456,10 +466,18 @@ void mana(){
       
       costhetavsphi->Fill(phi,cos(theta));
       
-      disp->Fill(PlaneMax10,PlaneMax23);
+     
       tof->Fill(crt_ToF);
-      coor_spherical->Fill(180*theta/M_PI);
-      coor_costheta->Fill(cos(theta));
+      
+      if (crt_ToF>0) {
+         coor_spherical->Fill(180*theta/M_PI);
+         coor_costheta->Fill(cos(theta));
+      }
+      else if (crt_ToF<0){
+        coor_spherical_tof_m0->Fill(180*theta/M_PI);
+        coor_costhetatof_m0->Fill(cos(theta));
+        
+      }
        
       LvsTOF->Fill(crt_ToF,L);
 
@@ -471,7 +489,7 @@ void mana(){
                      if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
                                {
                                  f++;
-                                  V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
+                                 // V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
                                }
                }
             
@@ -624,8 +642,8 @@ void mana(){
   cut.close();
   
   
-  Canvas->Print("lxplus/Track_z_ys.pdf");
-  Canvas2->Print("lxplus/Track_x_ys.pdf");
+  Canvas->Print("local/Track_z_ys.pdf");
+  Canvas2->Print("local/Track_x_ys.pdf");
   
   double xxtot=xf12+xf14+xf23+xf34;
   double zztot=zf12+zf14+zf23+zf34;
@@ -683,7 +701,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("lxplus/tprofile.pdf");
+    c1->Print("local/tprofile.pdf");
   
   
 */
@@ -753,7 +771,7 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("lxplus/Crt_adc_diff.pdf");
+  c2->Print("local/Crt_adc_diff.pdf");
  */
  /**************************************************/
  
@@ -766,7 +784,7 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("lxplus/Crt_coincidencias_barras.pdf");
+  c3->Print("local/Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
@@ -774,13 +792,20 @@ gStyle->SetGridStyle(3);
   
   TCanvas * c7 = new TCanvas();
   tof->Draw("hist");
-  c7->Print("lxplus/tof.pdf");
+  c7->Print("local/tof.pdf");
   
    /**************************************************/
 
-  TCanvas * c8 = new TCanvas();
+  TCanvas * c8 = new TCanvas("c8", "c8", 1800,900);
+  c8->Divide(3,1);
+  c8->cd(1);
    disp->Draw("COLZ");
-   c8->Print("lxplus/disp.pdf");
+  c8->cd(2);
+  disp01->Draw("hist");
+  c8->cd(3);
+  disp23->Draw("hist");
+  
+   c8->Print("local/disp.pdf");
    
     /**************************************************/
   
@@ -794,7 +819,7 @@ gStyle->SetGridStyle(3);
     V_bars[0]->Draw("hist");
     c12->cd(4);
     V_bars[0]->Draw("hist");
-   c12->Print("lxplus/barswevents.pdf");
+   c12->Print("local/barswevents.pdf");
    
     /**************************************************/
   
@@ -809,7 +834,7 @@ gStyle->SetGridStyle(3);
      V_sB_coor[2]->Draw("COLZ");
      c13->cd(4);
      V_sB_coor[3]->Draw("COLZ");
-    c13->Print("lxplus/SBvsdistance.pdf");
+    c13->Print("local/SBvsdistance.pdf");
     
      /**************************************************/
   
@@ -818,17 +843,25 @@ gStyle->SetGridStyle(3);
   c9->cd(1);
   //coor_spherical->SetMarkerStyle(29);
    coor_spherical->Draw("hist");
-   c9->cd(2);
+  coor_spherical_tof_m0->SetLineColor(kRed);
+  coor_spherical_tof_m0->Draw("same hist");
+  c9->cd(2);
  //  coor_costheta->SetMarkerStyle(29);
   coor_costheta->Draw("hist");
-   c9->Print("lxplus/costheta.pdf");
+  coor_costhetatof_m0->SetLineColor(kRed);
+  coor_costhetatof_m0->Draw("same hist");
+   auto legend = new TLegend(0.1,0.7,0.48,0.9);
+    legend->AddEntry(coor_costhetatof_m0,"TOF<0","l");
+    legend->AddEntry(coor_costheta,"TOF>0","l");
+    legend->Draw();
+   c9->Print("local/costheta.pdf");
    
   
    /**************************************************/
 
    TCanvas * c10 = new TCanvas();
    LvsTOF->Draw("COLZ");
-   c10->Print("lxplus/LVSTOF.pdf");
+   c10->Print("local/LVSTOF.pdf");
    
 
   
@@ -837,7 +870,7 @@ gStyle->SetGridStyle(3);
 
    TCanvas * c11 = new TCanvas();
    costhetavsphi->Draw("COLZ");
-   c11->Print("lxplus/costhetavsphi.pdf");
+   c11->Print("local/costhetavsphi.pdf");
    
 
   
@@ -857,7 +890,7 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c31->Print("lxplus/Crt_barras_weighted.pdf");
+  c31->Print("local/Crt_barras_weighted.pdf");
 
 */
 
@@ -882,7 +915,7 @@ gStyle->SetGridStyle(3);
   V_plano_tot_cut[2]->Draw("hist");
   c4->cd(4);
    V_plano_tot_cut[3]->Draw("hist");
-  c4->Print("lxplus/Crt_V_plano_tot_cut[0].pdf");
+  c4->Print("local/Crt_V_plano_tot_cut[0].pdf");
 
  
  
@@ -901,7 +934,7 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("lxplus/1stmaxvs2ndmax.pdf");
+   c5->Print("local/1stmaxvs2ndmax.pdf");
 
 
 
