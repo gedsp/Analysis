@@ -14,7 +14,7 @@ void mana(){
 
  //lxxxpluss
 
-
+/*
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
@@ -43,10 +43,10 @@ void mana(){
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");//
 
 
-  
+*/
   
  //looocall
-//md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   double min_threshold_bar = 500;
   double max_threshold_PM= 4089;
@@ -142,7 +142,10 @@ void mana(){
   // # bar w events
    vector<TH1F*>  V_bars;
   TH1F* barwEvents;
- 
+
+ // # bar w events
+  vector<TH1F*>  V_bars_cut;
+ TH1F* barwEvents_cut;
   
   for (int j =0; j<4; j++) {
        
@@ -150,12 +153,15 @@ void mana(){
     hprof =new TProfile(Form("plano_%d",j), "plano0", 3000,0.1,3000,0.,16.);
     hprof->SetTitle(Form("Plane %d; Cut Value; # active bars",j));
        
-    barwEvents = new TH1F(Form("barwEvents_%d",j), " barwEvents", 16,0.1,16);
+    barwEvents_cut = new TH1F(Form("barwEvents_%d_cut",j), " barwEvents_cut", 16,-0.5,15.5);
+    
+    barwEvents = new TH1F(Form("barwEvents_%d",j), " barwEvents", 16,-0.5,15.5);
     barwEvents->SetTitle("Distribuition # bar with events; # bar with events; # events");
     
    
    
-    
+    V_bars_cut.push_back(barwEvents_cut);
+
     V_bars.push_back(barwEvents);
     plano_cut_hprof.push_back(hprof);
    
@@ -323,6 +329,7 @@ void mana(){
     double PlaneSignalTot[4][16];
     double PlaneSignalDif[4][16];
     double PlaneMax[4],PlaneMin[4];
+    int f=0;
     
     for ( int k =0; k<4; k++) {   // loop on planes
     
@@ -351,13 +358,21 @@ void mana(){
             
             if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
             {
+              f++;
                V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
             }
             
-            V_plano[k]->Fill(PlaneSignalTot[k][b]);
+             if (f!=0) {
+                          V_bars[k]->Fill(f);
+                     
+                    
+                  }
             
+            
+            V_plano[k]->Fill(PlaneSignalTot[k][b]);
+           
           }
-         
+          
           // Studying signal diff
           if (abs(crt_adc[k][j])<0.1||abs(crt_adc[k][j+1])<0.1||PlaneSignalDif[k][b]==0){
             
@@ -372,7 +387,7 @@ void mana(){
 
         }
     
-        
+      
         
         
       }
@@ -380,7 +395,7 @@ void mana(){
      // cout << "PlaneSignalDif " << k << " zeros = " << zeros << endl;
          // Get Max/Min signal per plane
       
-      
+       f=0;
       double * pmin  =  min_element(begin(PlaneSignalTot[k]), end(PlaneSignalTot[k]));
       double * pmax =  max_element(begin(PlaneSignalTot[k]), end(PlaneSignalTot[k]));
      
@@ -422,7 +437,7 @@ void mana(){
     }
   
     
-    int f=0;
+    f=0;
     if (g==4&&SkipEvent==0) {
       
       
@@ -495,11 +510,11 @@ void mana(){
             
             
             if (f!=0) {
-                   V_bars[k]->Fill(f);
+                   V_bars_cut[k]->Fill(f);
              
             
             }
-        
+        f=0;
           }
       
       
@@ -642,8 +657,8 @@ void mana(){
   cut.close();
   
   
-  Canvas->Print("lxplus/Track_z_ys.pdf");
-  Canvas2->Print("lxplus/Track_x_ys.pdf");
+  Canvas->Print("local/Track_z_ys.pdf");
+  Canvas2->Print("local/Track_x_ys.pdf");
   
   double xxtot=xf12+xf14+xf23+xf34;
   double zztot=zf12+zf14+zf23+zf34;
@@ -701,7 +716,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("lxplus/tprofile.pdf");
+    c1->Print("local/tprofile.pdf");
   
   
 */
@@ -771,7 +786,7 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("lxplus/Crt_adc_diff.pdf");
+  c2->Print("local/Crt_adc_diff.pdf");
  */
  /**************************************************/
  
@@ -784,7 +799,7 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("lxplus/Crt_coincidencias_barras.pdf");
+  c3->Print("local/Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
@@ -792,7 +807,7 @@ gStyle->SetGridStyle(3);
   
   TCanvas * c7 = new TCanvas();
   tof->Draw("hist");
-  c7->Print("lxplus/tof.pdf");
+  c7->Print("local/tof.pdf");
   
    /**************************************************/
 
@@ -805,7 +820,7 @@ gStyle->SetGridStyle(3);
   c8->cd(3);
   disp23->Draw("hist");
   
-   c8->Print("lxplus/disp.pdf");
+   c8->Print("local/disp.pdf");
    
     /**************************************************/
   
@@ -813,13 +828,26 @@ gStyle->SetGridStyle(3);
    c12->Divide(2,2);
     c12->cd(1);
     V_bars[0]->Draw("hist");
+  V_bars_cut[0]->SetLineColor(kRed);
+  //V_bars_cut[0]->Draw("same hist");
     c12->cd(2);
-    V_bars[0]->Draw("hist");
+    V_bars[1]->Draw("hist");
+  V_bars_cut[1]->SetLineColor(kRed);
+  //V_bars_cut[1]->Draw("same hist");
     c12->cd(3);
-    V_bars[0]->Draw("hist");
+    V_bars[2]->Draw("hist");
+  V_bars_cut[2]->SetLineColor(kRed);
+ // V_bars_cut[2]->Draw("same hist");
     c12->cd(4);
-    V_bars[0]->Draw("hist");
-   c12->Print("lxplus/barswevents.pdf");
+    V_bars[3]->Draw("hist");
+  V_bars_cut[3]->SetLineColor(kRed);
+//  V_bars_cut[3]->Draw("same hist");
+  auto legend1 = new TLegend(0.50,0.7,0.84,0.9);
+   legend1->AddEntry( V_bars[3],"Pre cut","l");
+   legend1->AddEntry(V_bars_cut[3],"Cut","l");
+ //  legend1->Draw();
+  
+   c12->Print("local/barswevents_precut.pdf");
    
     /**************************************************/
   
@@ -834,7 +862,8 @@ gStyle->SetGridStyle(3);
      V_sB_coor[2]->Draw("COLZ");
      c13->cd(4);
      V_sB_coor[3]->Draw("COLZ");
-    c13->Print("lxplus/SBvsdistance.pdf");
+  
+    c13->Print("local/SBvsdistance.pdf");
     
      /**************************************************/
   
@@ -854,14 +883,14 @@ gStyle->SetGridStyle(3);
     legend->AddEntry(coor_costhetatof_m0,"TOF<0","l");
     legend->AddEntry(coor_costheta,"TOF>0","l");
     legend->Draw();
-   c9->Print("lxplus/costheta.pdf");
+   c9->Print("local/costheta.pdf");
    
   
    /**************************************************/
 
    TCanvas * c10 = new TCanvas();
    LvsTOF->Draw("COLZ");
-   c10->Print("lxplus/LVSTOF.pdf");
+   c10->Print("local/LVSTOF.pdf");
    
 
   
@@ -870,7 +899,7 @@ gStyle->SetGridStyle(3);
 
    TCanvas * c11 = new TCanvas();
    costhetavsphi->Draw("COLZ");
-   c11->Print("lxplus/costhetavsphi.pdf");
+   c11->Print("local/costhetavsphi.pdf");
    
 
   
@@ -890,7 +919,7 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c31->Print("lxplus/Crt_barras_weighted.pdf");
+  c31->Print("local/Crt_barras_weighted.pdf");
 
 */
 
@@ -915,7 +944,7 @@ gStyle->SetGridStyle(3);
   V_plano_tot_cut[2]->Draw("hist");
   c4->cd(4);
    V_plano_tot_cut[3]->Draw("hist");
-  c4->Print("lxplus/Crt_V_plano_tot_cut[0].pdf");
+  c4->Print("local/Crt_V_plano_tot_cut[0].pdf");
 
  
  
@@ -934,7 +963,7 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("lxplus/1stmaxvs2ndmax.pdf");
+   c5->Print("local/1stmaxvs2ndmax.pdf");
 
 
 
