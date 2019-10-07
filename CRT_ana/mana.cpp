@@ -541,20 +541,20 @@ void mana(){
       
       
       
-      if (zz1>0&&zz2>0) {
-        zf12=zf12+1;
-      }
+     // if (zz1>15.55&&zz2>-90) {
+     //   zf12=zf12+1;
+     // }
       
-      if (zz1<0&&zz2<0) {
+      if (zz1==zz2) {
             zf34=zf34+1;
       }
       
       
-      if (zz1>0&&zz2<0) {
+      if (zz1>-3.15) {
              zf14=zf14+1;
            }
            
-      if (zz1<0&&zz2>0) {
+      if (zz1<-37.55&&zz2>-37.55) {
                  zf23=zf23+1;
       }
       
@@ -576,7 +576,7 @@ void mana(){
   
   
      Canvas->cd();
-//   Track_z_y->Fit("pol1");
+  Track_z_y->Fit("pol1");
     Track_z_y->SetMarkerStyle(20);
     Track_z_y->SetLineColorAlpha(kRed,0.50);
      Track_z_y->SetLineWidth(1);
@@ -590,7 +590,7 @@ void mana(){
       else if(g==4&&SkipEvent==0) Track_z_y->Draw("same P");
   
    Canvas2->cd();
- // Track_x_y->Fit("pol1");
+ Track_x_y->Fit("pol1");
        Track_x_y->SetMarkerStyle(20);
        if (DrawGraph==1&&g==4&&SkipEvent==0) {
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
@@ -659,11 +659,11 @@ void mana(){
   Canvas2->Print("lxplus/Track_x_ys.pdf");
   
   double xxtot=xf12+xf14+xf23+xf34;
-  double zztot=zf12+zf14+zf23+zf34;
+  double zztot=zf14+zf23+zf34;
   
   cout << "\nProjection X Y \nfraction of tracks 1->2 " << xf12/xxtot << "\nfraction of tracks 2->3 " << xf23/xxtot << "\nfraction of tracks 3->4 " << xf34/xxtot << "\nfraction of tracks 1->4 " << xf14/xxtot << endl;
   
-  cout << "\nProjection Z Y\nfraction of tracks 1->2 " << zf12/zztot << "\nfraction of tracks 2->3 " << zf23/zztot << "\nfraction of tracks 3->4 " << zf34/zztot << "\nfraction of tracks 1->4 " << zf14/zztot << endl;
+  cout << "\nProjection Z Y\nfraction of tracks 1->2 " << zf34/zztot << "\nfraction of tracks 2->3 " << zf23/zztot << "\nfraction of tracks 3->4 " << zf34/zztot << "\nfraction of tracks 1->4 " << zf14/zztot << endl;
    
   
   
