@@ -42,7 +42,6 @@ void mana(){
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");//
 
 
-
   
  //looocall
 //md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
@@ -170,18 +169,18 @@ void mana(){
   
   //S1+s2 vs coord
   vector<TH2F*>  V_sB_coor;
-  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,-72,230);
+  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,0,230);
   sbcoor0->SetTitle("Plane 0; S_{B}; Distante to PM in Z (cm)");
    V_sB_coor.push_back(sbcoor0);
-  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,-210,87);
+  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,-230,87);
   sbcoor1->SetTitle("Plane 1; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor1);
   
-  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,-210,87);
+  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,-230,87);
   sbcoor2->SetTitle("Plane 2; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor2);
   
-  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,-177,220);
+  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,0,240);
    sbcoor3->SetTitle("Plane 3; S_{B}; Distante to PM in Z (cm)");
     V_sB_coor.push_back(sbcoor3);
   
