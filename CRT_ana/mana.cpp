@@ -169,18 +169,18 @@ void mana(){
   
   //S1+s2 vs coord
   vector<TH2F*>  V_sB_coor;
-  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,0,230);
+  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,0,180);
   sbcoor0->SetTitle("Plane 0; S_{B}; Distante to PM in Z (cm)");
    V_sB_coor.push_back(sbcoor0);
-  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,-230,87);
+  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,0,180);
   sbcoor1->SetTitle("Plane 1; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor1);
   
-  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,-230,87);
+  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,0,180);
   sbcoor2->SetTitle("Plane 2; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor2);
   
-  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,0,240);
+  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,0,180);
    sbcoor3->SetTitle("Plane 3; S_{B}; Distante to PM in Z (cm)");
     V_sB_coor.push_back(sbcoor3);
   
@@ -516,10 +516,12 @@ void mana(){
           }
       
       
-      V_sB_coor[0]->Fill(PlaneMax[0],zz1-(-110));
-      V_sB_coor[1]->Fill(PlaneMax[1],xx0-115);
-      V_sB_coor[2]->Fill(PlaneMax[2],xx3-115);
-      V_sB_coor[3]->Fill(PlaneMax[3],zz2-(-205));
+      V_sB_coor[0]->Fill(PlaneMax[0],abs(abs(zz1)-110));
+      V_sB_coor[1]->Fill(PlaneMax[1],abs(abs(xx0)-115));
+      V_sB_coor[2]->Fill(PlaneMax[2],abs(abs(xx3)-115));
+      V_sB_coor[3]->Fill(PlaneMax[3],abs(abs(zz2)-205));
+      
+      cout << "zz plano 3 " << zz2 << " - "  << 205<< endl;
       
       if (xx0>0&&xx3>0) {
         xf12=xf12+1;
