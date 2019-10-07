@@ -14,7 +14,6 @@ void mana(){
 
  //lxxxpluss
 
-
  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
@@ -171,18 +170,18 @@ void mana(){
   
   //S1+s2 vs coord
   vector<TH2F*>  V_sB_coor;
-  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,-72,111);
+  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,-72,230);
   sbcoor0->SetTitle("Plane 0; S_{B}; Distante to PM in Z (cm)");
    V_sB_coor.push_back(sbcoor0);
-  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,-87,87);
+  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,-210,87);
   sbcoor1->SetTitle("Plane 1; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor1);
   
-  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,-87,87);
+  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,-210,87);
   sbcoor2->SetTitle("Plane 2; S_{B}; Distante to PM in X (cm)");
    V_sB_coor.push_back(sbcoor2);
   
-  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,-177,-4);
+  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,-177,220);
    sbcoor3->SetTitle("Plane 3; S_{B}; Distante to PM in Z (cm)");
     V_sB_coor.push_back(sbcoor3);
   
@@ -207,8 +206,8 @@ void mana(){
   
   // planes occupancy
   
-  TH2F* plano01 = new TH2F("plano01", "plano01", 16,0.0,16,16,0.0,16);
-  TH2F* plano23 = new TH2F("plano23", "plano23",16,0.0,16,16,0.0,16);
+  TH2F* plano01 = new TH2F("plano01", "plano01",  16,-0.5,15.5, 16,-0.5,15.5);
+  TH2F* plano23 = new TH2F("plano23", "plano23",  16,-0.5,15.5, 16,-0.5,15.5);
   plano01->SetTitle("Coincidences Plane 0 and 1; Plane 0; Plane 1");
   plano23->SetTitle("Coincidences Plane 2 and 3; Plane 3; Plane 2");
 
@@ -518,10 +517,10 @@ void mana(){
           }
       
       
-      V_sB_coor[0]->Fill(PlaneMax[0],zz1);
-      V_sB_coor[1]->Fill(PlaneMax[1],xx0);
-      V_sB_coor[2]->Fill(PlaneMax[2],xx3);
-      V_sB_coor[3]->Fill(PlaneMax[3],zz2);
+      V_sB_coor[0]->Fill(PlaneMax[0],zz1-(-110));
+      V_sB_coor[1]->Fill(PlaneMax[1],xx0-115);
+      V_sB_coor[2]->Fill(PlaneMax[2],xx3-115);
+      V_sB_coor[3]->Fill(PlaneMax[3],zz2-(-205));
       
       if (xx0>0&&xx3>0) {
         xf12=xf12+1;
@@ -582,26 +581,26 @@ void mana(){
     Track_z_y->SetMarkerStyle(20);
     Track_z_y->SetLineColorAlpha(kRed,0.50);
      Track_z_y->SetLineWidth(1);
-      if (DrawGraph==1&&g==4&&SkipEvent==0&&crt_ToF>0) {
+      if (DrawGraph==1&&g==4&&SkipEvent==0) {
         Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
         Track_z_y->SetMaximum(103);
         Track_z_y->SetMinimum(-177);
         Track_z_y->GetXaxis()->SetLimits(-377,377);
         Track_z_y->Draw("AP");
       }
-      else if(g==4&&SkipEvent==0&&crt_ToF>0) Track_z_y->Draw("same P");
+      else if(g==4&&SkipEvent==0) Track_z_y->Draw("same P");
   
    Canvas2->cd();
  // Track_x_y->Fit("pol1");
        Track_x_y->SetMarkerStyle(20);
-       if (DrawGraph==1&&g==4&&SkipEvent==0&&crt_ToF>0) {
+       if (DrawGraph==1&&g==4&&SkipEvent==0) {
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
          Track_x_y->SetMaximum(87);
          Track_x_y->SetMinimum(-87);
          Track_x_y->GetXaxis()->SetLimits(-377,377);
             Track_x_y->Draw("AP");
        }
-       else if(g==4&&SkipEvent==0&&crt_ToF>0) Track_x_y->Draw("same P");
+       else if(g==4&&SkipEvent==0) Track_x_y->Draw("same P");
  
   
     
