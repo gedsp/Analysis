@@ -250,7 +250,7 @@ void mana(){
 
   //L vs tof
   
-  TH2F* LvsTOF = new TH2F("LvsTOF", "LvsTOF" , 50, 0.0,50.0,100, 740,840.0);
+  TH2F* LvsTOF = new TH2F("LvsTOF", "LvsTOF" , 100,-50,50.0,100, 740,840.0);
   LvsTOF->SetTitle("L vs TOF; TOF; L (cm)");
   
   
