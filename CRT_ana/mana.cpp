@@ -918,7 +918,7 @@ gStyle->SetGridStyle(3);
   
    TCanvas * c14 = new TCanvas();
    pmt->Draw("hist");
-   c13->Print("lxplus/pmt.pdf");
+   c14->Print("lxplus/pmt.pdf");
    
 
   
