@@ -14,7 +14,7 @@ void mana(){
 
  //lxxxpluss
 
- md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
+  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001337_reprocessed.root");//
@@ -170,24 +170,39 @@ void mana(){
    
     
      }
-  
-  
   //S1+s2 vs coord
-  vector<TH2F*>  V_sB_coor;
-  TH2F* sbcoor0 = new TH2F("sbcoor_0", "sbcoor0",  100,0.1,8500,10,0,180);
-  sbcoor0->SetTitle("Plane 0; S_{B}; Distante to PM in Z (cm)");
-   V_sB_coor.push_back(sbcoor0);
-  TH2F* sbcoor1 = new TH2F("sbcoor_1", "sbcoor1",  100,0.1,8500,10,0,180);
-  sbcoor1->SetTitle("Plane 1; S_{B}; Distante to PM in X (cm)");
-   V_sB_coor.push_back(sbcoor1);
+  vector<TH2F*>   V_delta_max_2;
+  TH2F* sbcoor02 = new TH2F("sbcoor_20", "sbcoor0",  100,0.1,8500,100,0,8000);
+  sbcoor02->SetTitle("Plane 0; S_{B} 1st max-S_{B} 2nd max; Signal max");
+   V_delta_max_2.push_back(sbcoor02);
+  TH2F* sbcoor12 = new TH2F("sbcoor_21", "sbcoor1",  100,0.1,8500,100,0,8000);
+  sbcoor12->SetTitle("Plane 1; S_{B} 1st max-S_{B} 2nd max;  Signal max");
+   V_delta_max_2.push_back(sbcoor12);
   
-  TH2F* sbcoor2 = new TH2F("sbcoor_2", "sbcoor1",  100,0.1,8500,10,0,180);
-  sbcoor2->SetTitle("Plane 2; S_{B}; Distante to PM in X (cm)");
-   V_sB_coor.push_back(sbcoor2);
+  TH2F* sbcoor22 = new TH2F("sbcoor_22", "sbcoor1",  100,0.1,8500,100,0,8000);
+  sbcoor22->SetTitle("Plane 2; S_{B} 1st max-S_{B} 2nd max;  Signal max");
+   V_delta_max_2.push_back(sbcoor22);
   
-  TH2F* sbcoor3 = new TH2F("sbcoor_3", "sbcoor1",  100,0.1,8500,10,0,180);
-   sbcoor3->SetTitle("Plane 3; S_{B}; Distante to PM in Z (cm)");
-    V_sB_coor.push_back(sbcoor3);
+  TH2F* sbcoor32 = new TH2F("sbcoor_23", "sbcoor1",  100,0.1,8500,100,0,8000);
+   sbcoor32->SetTitle("Plane 3; S_{B} 1st max-S_{B} 2nd max; Signal max");
+    V_delta_max_2.push_back(sbcoor32);
+ 
+  //S1+s2 vs coord
+  vector<TH1F*>   V_delta_max;
+  TH1F* sbcoor0 = new TH1F("sbcoor_0", "sbcoor0",  100,0.1,8500);
+  sbcoor0->SetTitle("Plane 0; S_{B} 1st max-S_{B} 2nd max; # events");
+   V_delta_max.push_back(sbcoor0);
+  TH1F* sbcoor1 = new TH1F("sbcoor_1", "sbcoor1",  100,0.1,8500);
+  sbcoor1->SetTitle("Plane 1; S_{B} 1st max-S_{B} 2nd max; # events");
+   V_delta_max.push_back(sbcoor1);
+  
+  TH1F* sbcoor2 = new TH1F("sbcoor_2", "sbcoor1",  100,0.1,8500);
+  sbcoor2->SetTitle("Plane 2; S_{B} 1st max-S_{B} 2nd max; # events");
+   V_delta_max.push_back(sbcoor2);
+  
+  TH1F* sbcoor3 = new TH1F("sbcoor_3", "sbcoor1",  100,0.1,8500);
+   sbcoor3->SetTitle("Plane 3; S_{B} 1st max-S_{B} 2nd max; # events");
+    V_delta_max.push_back(sbcoor3);
   
   //signal diff
   
@@ -434,7 +449,9 @@ void mana(){
       
       double dif=PlaneSignalTot[k][15]-PlaneSignalTot[k][14];
       
-      
+      V_delta_max[k]->Fill(dif);
+      V_delta_max_2[k]->Fill(dif,PlaneMax[k]);
+
       if(dif<2500.){
         
         SkipEvent++;
@@ -485,20 +502,20 @@ void mana(){
       double L=sqrt((xx0-xx3)*(xx0-xx3)+(ycor_plane0-ycor_plane3)*(ycor_plane0-ycor_plane3)+(zz1-zz2)*( zz1-zz2 ));
    
       
-      double theta= acos(  ( zz1-zz2 )  / L);
+      double costheta=(  abs(( zz1-zz2 ))  / L);
       
-      costhetavsphi->Fill(phi,cos(theta));
+      costhetavsphi->Fill(phi,costheta);
       
      
       tof->Fill(crt_ToF);
       
       if (crt_ToF>0) {
-         coor_spherical->Fill(180*theta/M_PI);
-         coor_costheta->Fill(cos(theta));
+         coor_spherical->Fill(180*acos(costheta)/M_PI);
+         coor_costheta->Fill(costheta);
       }
       else if (crt_ToF<0){
-        coor_spherical_tof_m0->Fill(180*theta/M_PI);
-        coor_costhetatof_m0->Fill(cos(theta));
+        coor_spherical_tof_m0->Fill(180*acos(-costheta)/M_PI);
+        coor_costhetatof_m0->Fill(-costheta);
         
       }
        
@@ -526,28 +543,63 @@ void mana(){
           }
       
       
-      V_sB_coor[0]->Fill(PlaneMax[0],abs(abs(zz1)-110));
+      /*V_sB_coor[0]->Fill(PlaneMax[0],abs(abs(zz1)-110));
       V_sB_coor[1]->Fill(PlaneMax[1],abs(abs(xx0)-115));
       V_sB_coor[2]->Fill(PlaneMax[2],abs(abs(xx3)-115));
       V_sB_coor[3]->Fill(PlaneMax[3],abs(abs(zz2)-205));
+      */
+  //    cout << "zz plano 3 " << zz2 << " - "  << 205<< endl;
       
-      cout << "zz plano 3 " << zz2 << " - "  << 205<< endl;
       
-      if (xx0>0&&xx3>0) {
+          Track_z_y->SetPoint(0,ycor_plane1,zz1);
+          Track_z_y->SetPoint(1,ycor_plane2,zz2);
+          Track_x_y->SetPoint(0,ycor_plane0,xx0);
+          Track_x_y->SetPoint(1,ycor_plane3,xx3);
+      
+      
+  /*    if (xx0>0&&xx3>0) {
         xf12=xf12+1;
+         Track_x_y->SetLineColor(kBlue);
       }
-      
-      if (xx0<0&&xx3<0) {
-            xf34=xf34+1;
+  */
+      if ((xx0<0&&xx3<0)||(xx0>0&&xx3>0)) {
+             Track_x_y->Fit("pol1");
+                   TF1 *fit = Track_x_y->GetFunction("pol1");
+                   xf12=xf12+1;
+               
+                   if (xf12<10) {
+                    fit->SetLineColor(kBlue+1);
+                 
+                   }
+                 
+                   else fit->SetLineColor(kBlue+3);
+
       }
       
       
       if (xx0>0&&xx3<0) {
-             xf14=xf14+1;
-           }
+        Track_x_y->Fit("pol1");
+        TF1 *fit = Track_x_y->GetFunction("pol1");
+        xf14=xf14+1;
+    
+        if (xf14<10) {
+         fit->SetLineColor(kRed+1);
+      
+        }
+      
+        else fit->SetLineColor(kRed+3);
+
+      }
            
       if (xx0<0&&xx3>0) {
           xf23=xf23+1;
+        Track_x_y->Fit("pol1");
+         TF1 *fit = Track_x_y->GetFunction("pol1");
+         // fit->SetLineColor(kRed+1);
+        if (xf23<10) {
+           fit->SetLineColor(kGreen+1);
+        }
+        else fit->SetLineColor(kGreen+3);
       }
          
       
@@ -559,23 +611,45 @@ void mana(){
       
       if (zz1==zz2) {
             zf34=zf34+1;
+   
+        Track_z_y->Fit("pol1");
+         TF1 *fit = Track_z_y->GetFunction("pol1");
+         // fit->SetLineColor(kRed+1);
+        if (zf34<10) {
+           fit->SetLineColor(kBlue);
+        }
+        else fit->SetLineColor(kBlue+3);
       }
       
       
       if (zz1>-3.15) {
              zf14=zf14+1;
-           }
+         Track_z_y->Fit("pol1");
+        TF1 *fit = Track_z_y->GetFunction("pol1");
+        if (zf14<250) {
+           fit->SetLineColor(kRed);
+        }
+        else if (zf14>500) {
+          fit->SetLineColor(kRed+3);
+        }
+        else fit->SetLineColor(kRed+2);
+      }
            
       if (zz1<-37.55&&zz2>-37.55) {
                  zf23=zf23+1;
+         
+          Track_z_y->Fit("pol1");
+          TF1 *fit = Track_z_y->GetFunction("pol1");
+         if (zf23<100) {
+            fit->SetLineColor(kGreen+1);
+         }
+        else if (zf23>500) {
+                 fit->SetLineColor(kGreen+3);
+               }
+         else fit->SetLineColor(kGreen+2);
       }
       
       
-      
-      Track_z_y->SetPoint(0,ycor_plane1,zz1);
-      Track_z_y->SetPoint(1,ycor_plane2,zz2);
-      Track_x_y->SetPoint(0,ycor_plane0,xx0);
-      Track_x_y->SetPoint(1,ycor_plane3,xx3);
      
 
       
@@ -588,9 +662,9 @@ void mana(){
   
   
      Canvas->cd();
-  Track_z_y->Fit("pol1");
-    Track_z_y->SetMarkerStyle(20);
-    Track_z_y->SetLineColorAlpha(kRed,0.50);
+  //Track_z_y->Fit("pol1");
+    //Track_z_y->SetMarkerStyle(20);
+   // Track_z_y->SetLineColorAlpha(kRed,0.50);
      Track_z_y->SetLineWidth(1);
       if (DrawGraph==1&&g==4&&SkipEvent==0) {
         Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
@@ -602,7 +676,7 @@ void mana(){
       else if(g==4&&SkipEvent==0) Track_z_y->Draw("same P");
   
    Canvas2->cd();
- Track_x_y->Fit("pol1");
+
        Track_x_y->SetMarkerStyle(20);
        if (DrawGraph==1&&g==4&&SkipEvent==0) {
          Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
@@ -667,8 +741,8 @@ void mana(){
   cut.close();
   
   
-  Canvas->Print("lxplus/Track_z_ys.pdf");
-  Canvas2->Print("lxplus/Track_x_ys.pdf");
+  Canvas->Print("local/Track_z_ys.pdf");
+  Canvas2->Print("local/Track_x_ys.pdf");
   
   double xxtot=xf12+xf14+xf23+xf34;
   double zztot=zf14+zf23+zf34;
@@ -726,7 +800,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("lxplus/tprofile.pdf");
+    c1->Print("local/tprofile.pdf");
   
   
 */
@@ -796,7 +870,7 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("lxplus/Crt_adc_diff.pdf");
+  c2->Print("local/Crt_adc_diff.pdf");
  */
  /**************************************************/
  
@@ -809,7 +883,7 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("lxplus/Crt_coincidencias_barras.pdf");
+  c3->Print("local/Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
@@ -817,7 +891,7 @@ gStyle->SetGridStyle(3);
   
   TCanvas * c7 = new TCanvas();
   tof->Draw("hist");
-  c7->Print("lxplus/tof.pdf");
+  c7->Print("local/tof.pdf");
   
    /**************************************************/
 
@@ -830,7 +904,7 @@ gStyle->SetGridStyle(3);
   c8->cd(3);
   disp23->Draw("hist");
   
-   c8->Print("lxplus/disp.pdf");
+   c8->Print("local/disp.pdf");
    
     /**************************************************/
   
@@ -857,7 +931,7 @@ gStyle->SetGridStyle(3);
    legend1->AddEntry(V_bars_cut[3],"Cut","l");
  //  legend1->Draw();
   
-   c12->Print("lxplus/barswevents_precut.pdf");
+   c12->Print("local/barswevents_precut.pdf");
    
     /**************************************************/
   
@@ -865,16 +939,33 @@ gStyle->SetGridStyle(3);
   TCanvas * c13 = new TCanvas();
     c13->Divide(2,2);
      c13->cd(1);
-     V_sB_coor[0]->Draw("COLZ");
+       V_delta_max[0]->Draw("hist");
      c13->cd(2);
-     V_sB_coor[1]->Draw("COLZ");
+       V_delta_max[1]->Draw("hist");
      c13->cd(3);
-     V_sB_coor[2]->Draw("COLZ");
+       V_delta_max[2]->Draw("hist");
      c13->cd(4);
-     V_sB_coor[3]->Draw("COLZ");
+     V_delta_max[3]->Draw("hist");
   
-    c13->Print("lxplus/SBvsdistance.pdf");
+    c13->Print("local/deltaSB.pdf");
     
+  /**************************************************/
+  
+  
+  TCanvas * c15 = new TCanvas();
+    c15->Divide(2,2);
+     c15->cd(1);
+       V_delta_max_2[0]->Draw("COLZ");
+     c15->cd(2);
+       V_delta_max_2[1]->Draw("COLZ");
+     c15->cd(3);
+       V_delta_max_2[2]->Draw("COLZ");
+     c15->cd(4);
+     V_delta_max_2[3]->Draw("COLZ");
+  
+    c15->Print("local/deltaSB_EnMAx.pdf");
+  
+  
      /**************************************************/
   
   TCanvas * c9 = new TCanvas();
@@ -883,24 +974,24 @@ gStyle->SetGridStyle(3);
   //coor_spherical->SetMarkerStyle(29);
    coor_spherical->Draw("hist");
   coor_spherical_tof_m0->SetLineColor(kRed);
-  //coor_spherical_tof_m0->Draw("same hist");
+  coor_spherical_tof_m0->Draw("same hist");
   c9->cd(2);
- //  coor_costheta->SetMarkerStyle(29);
+   coor_costheta->SetMarkerStyle(29);
   coor_costheta->Draw("hist");
   coor_costhetatof_m0->SetLineColor(kRed);
-//  coor_costhetatof_m0->Draw("same hist");
+ coor_costhetatof_m0->Draw("same hist");
    auto legend = new TLegend(0.1,0.7,0.48,0.9);
-   // legend->AddEntry(coor_costhetatof_m0,"TOF<0","l");
+   legend->AddEntry(coor_costhetatof_m0,"TOF<0","l");
     legend->AddEntry(coor_costheta,"TOF>0","l");
     legend->Draw();
-   c9->Print("lxplus/costheta.pdf");
+   c9->Print("local/costheta.pdf");
    
   
    /**************************************************/
 
    TCanvas * c10 = new TCanvas();
    LvsTOF->Draw("COLZ");
-   c10->Print("lxplus/LVSTOF.pdf");
+   c10->Print("local/LVSTOF.pdf");
    
 
   
@@ -909,7 +1000,7 @@ gStyle->SetGridStyle(3);
 
    TCanvas * c11 = new TCanvas();
    costhetavsphi->Draw("COLZ");
-   c11->Print("lxplus/costhetavsphi.pdf");
+   c11->Print("local/costhetavsphi.pdf");
    
 
   
@@ -918,7 +1009,7 @@ gStyle->SetGridStyle(3);
   
    TCanvas * c14 = new TCanvas();
    pmt->Draw("hist");
-   c14->Print("lxplus/pmt.pdf");
+   c14->Print("local/pmt.pdf");
    
 
   
@@ -936,7 +1027,7 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c31->Print("lxplus/Crt_barras_weighted.pdf");
+  c31->Print("local/Crt_barras_weighted.pdf");
 
 */
 
@@ -961,7 +1052,7 @@ gStyle->SetGridStyle(3);
   V_plano_tot_cut[2]->Draw("hist");
   c4->cd(4);
    V_plano_tot_cut[3]->Draw("hist");
-  c4->Print("lxplus/Crt_V_plano_tot_cut[0].pdf");
+  c4->Print("local/Crt_V_plano_tot_cut[0].pdf");
 
  
  
@@ -980,7 +1071,7 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("lxplus/1stmaxvs2ndmax.pdf");
+   c5->Print("local/1stmaxvs2ndmax.pdf");
 
 
 
