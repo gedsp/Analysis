@@ -913,23 +913,23 @@ gStyle->SetGridStyle(3);
     c12->cd(1);
     V_bars[0]->Draw("hist");
   V_bars_cut[0]->SetLineColor(kRed);
-  //V_bars_cut[0]->Draw("same hist");
+  V_bars_cut[0]->Draw("same hist");
     c12->cd(2);
     V_bars[1]->Draw("hist");
   V_bars_cut[1]->SetLineColor(kRed);
-  //V_bars_cut[1]->Draw("same hist");
+  V_bars_cut[1]->Draw("same hist");
     c12->cd(3);
     V_bars[2]->Draw("hist");
   V_bars_cut[2]->SetLineColor(kRed);
- // V_bars_cut[2]->Draw("same hist");
+  V_bars_cut[2]->Draw("same hist");
     c12->cd(4);
     V_bars[3]->Draw("hist");
   V_bars_cut[3]->SetLineColor(kRed);
-//  V_bars_cut[3]->Draw("same hist");
+  V_bars_cut[3]->Draw("same hist");
   auto legend1 = new TLegend(0.50,0.7,0.84,0.9);
    legend1->AddEntry( V_bars[3],"Pre cut","l");
    legend1->AddEntry(V_bars_cut[3],"Cut","l");
- //  legend1->Draw();
+   legend1->Draw();
   
    c12->Print("lxplus/barswevents_precut.pdf");
    
