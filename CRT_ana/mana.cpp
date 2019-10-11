@@ -14,7 +14,7 @@ void mana(){
 
  //lxxxpluss
 
-  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
+/*  md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001324_reprocessed.root");//
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001333_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001336_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001337_reprocessed.root");//
@@ -40,10 +40,10 @@ void mana(){
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001670_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001671_reprocessed.root");
   md->Add("/eos/experiment/wa105/data/311_PMT/data/root/reprocessed_5apr19/output00001672_reprocessed.root");//
-
+*/
 
  //looocall
-//md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
+  md->Add("/Users/gloria/wa105/WA105_mine/DATA/output00001672_reprocessed.root");
 
   double min_threshold_bar = 500;
   double max_threshold_PM= 4089;
@@ -149,6 +149,12 @@ void mana(){
   vector<TH1F*>  V_bars_cut;
  TH1F* barwEvents_cut;
   
+  
+  
+  // signal diff vs singnal sum
+   vector<TH2F*>  V_dif_sum;
+  TH2F* dif_sum;
+  
   for (int j =0; j<4; j++) {
        
        
@@ -161,14 +167,18 @@ void mana(){
     barwEvents->SetTitle("Distribuition # bar with events; # bar with events; # events");
     
    
+    dif_sum = new TH2F(Form("_dif%d",j), "dif", 800,-4500,4500,1600,0,8000);
+    dif_sum->SetTitle("; S1-S2; S1+S2");
    
     V_bars_cut.push_back(barwEvents_cut);
 
     V_bars.push_back(barwEvents);
     plano_cut_hprof.push_back(hprof);
-   
+    V_dif_sum.push_back(dif_sum);
     
      }
+  
+  
   //S1+s2 vs coord
   vector<TH2F*>   V_delta_max_2;
   TH2F* sbcoor02 = new TH2F("sbcoor_20", "sbcoor0",  100,0.1,8500,100,0,8000);
@@ -265,12 +275,12 @@ void mana(){
   //tof plot
   
   TH1F * tof = new TH1F("TOF", "TOF",  400,-200,200);
-  tof->SetTitle("TOF; TOF; # events");
+  tof->SetTitle("TOF; TOF (ns); # events");
 
   //L vs tof
   
   TH2F* LvsTOF = new TH2F("LvsTOF", "LvsTOF" , 100,-50,50.0,100, 740,840.0);
-  LvsTOF->SetTitle("L vs TOF; TOF; L (cm)");
+  LvsTOF->SetTitle("L vs TOF; TOF (ns) ; L (cm)");
   
   
   //dispertion
@@ -300,8 +310,13 @@ void mana(){
   costhetavsphi->SetTitle("Distribuition cos(#theta vs #phi); #phi (rad); cos(#theta)");
   
   //PMT
- TH1F* pmt = new TH1F("pmt", "pmt",  250,0,2000);
- pmt->SetTitle("Distance to PMT 3; Distance to PMT 3 ; # events");
+ TH1F* pmt = new TH1F("pmt", "pmt",  250,0,1800);
+ pmt->SetTitle("Distance to PMT 3; Distance to PMT 3 (mm) ; # events");
+  
+  
+  
+  
+  
   
   
   ofstream cut;
@@ -317,10 +332,16 @@ void mana(){
 
   
   
-  
-  
-  TCanvas * Canvas = new TCanvas();
-  TCanvas * Canvas2 = new TCanvas();
+
+  int Trackij_Z[16][16];
+  int Trackij_X[16][16];
+  for (int m; m<16; m++) {
+    for (int n; n<16; n++) {
+      Trackij_Z[m][n]=0;
+      Trackij_X[m][n]=0;
+
+    }
+  }
   
   double xf12=0,xf23=0,xf14=0,xf34=0;
   double zf12=0,zf23=0,zf14=0,zf34=0;
@@ -335,8 +356,7 @@ void mana(){
      md->SetBranchAddress("crt_pmt_dist_p", crt_pmt_dist_p, &b_crt_pmt_dist_p);
      md->SetBranchAddress("crt_pmt_dist_m", crt_pmt_dist_m, &b_crt_pmt_dist_m);
     
-    TGraph* Track_z_y = new TGraph(2);
-    TGraph* Track_x_y = new TGraph(2);
+   
     
     
     
@@ -376,6 +396,10 @@ void mana(){
           else {
             PlaneSignalTot[k][b]=crt_adc[k][j]+crt_adc[k][j+1];
             PlaneSignalDif[k][b]=crt_adc[k][j]-crt_adc[k][j+1];
+            
+            
+            V_dif_sum[k]->Fill(PlaneSignalDif[k][b], PlaneSignalTot[k][b]);
+            
             
             if (PlaneSignalTot[k][b]>min_threshold_bar) //aplicar corte mini
             {
@@ -447,10 +471,13 @@ void mana(){
       V_1maxvs2max[k]->Fill(PlaneSignalTot[k][15],PlaneSignalTot[k][14]);
       
       double dif=PlaneSignalTot[k][15]-PlaneSignalTot[k][14];
-      
+     
+      if (PlaneMax[k]>min_threshold_bar /*VALUE OF THRESHOLD */){
       V_delta_max[k]->Fill(dif);
       V_delta_max_2[k]->Fill(dif,PlaneMax[k]);
-
+      }
+      
+      
       if(dif<2500.){
         
         SkipEvent++;
@@ -493,6 +520,10 @@ void mana(){
       
       double xx3 = barID[3]*10.8+(barID[3]-1)*0.02+5.4-86.55;
       double zz2 = barID[2]*10.8+(barID[2]-1)*0.02+5.4-86.55-90;
+      
+      
+      Trackij_Z[barID[1]][barID[2]]++;
+      Trackij_X[barID[0]][barID[3]]++;
       
       
       double phi=atan( (ycor_plane0-ycor_plane3)/(xx0-xx3) );
@@ -549,12 +580,12 @@ void mana(){
       */
   //    cout << "zz plano 3 " << zz2 << " - "  << 205<< endl;
       
-      
+      /*
           Track_z_y->SetPoint(0,ycor_plane1,zz1);
           Track_z_y->SetPoint(1,ycor_plane2,zz2);
           Track_x_y->SetPoint(0,ycor_plane0,xx0);
           Track_x_y->SetPoint(1,ycor_plane3,xx3);
-      
+      */
       
   /*    if (xx0>0&&xx3>0) {
         xf12=xf12+1;
@@ -562,43 +593,24 @@ void mana(){
       }
   */
       if ((xx0<0&&xx3<0)||(xx0>0&&xx3>0)) {
-             Track_x_y->Fit("pol1");
-                   TF1 *fit = Track_x_y->GetFunction("pol1");
+           
                    xf12=xf12+1;
                
-                   if (xf12<10) {
-                    fit->SetLineColor(kBlue+1);
-                 
-                   }
-                 
-                   else fit->SetLineColor(kBlue+3);
+        
 
       }
       
       
       if (xx0>0&&xx3<0) {
-        Track_x_y->Fit("pol1");
-        TF1 *fit = Track_x_y->GetFunction("pol1");
+       
         xf14=xf14+1;
-    
-        if (xf14<10) {
-         fit->SetLineColor(kRed+1);
-      
-        }
-      
-        else fit->SetLineColor(kRed+3);
+  
 
       }
            
       if (xx0<0&&xx3>0) {
           xf23=xf23+1;
-        Track_x_y->Fit("pol1");
-         TF1 *fit = Track_x_y->GetFunction("pol1");
-         // fit->SetLineColor(kRed+1);
-        if (xf23<10) {
-           fit->SetLineColor(kGreen+1);
-        }
-        else fit->SetLineColor(kGreen+3);
+  
       }
          
       
@@ -611,41 +623,19 @@ void mana(){
       if (zz1==zz2) {
             zf34=zf34+1;
    
-        Track_z_y->Fit("pol1");
-         TF1 *fit = Track_z_y->GetFunction("pol1");
-         // fit->SetLineColor(kRed+1);
-        if (zf34<10) {
-           fit->SetLineColor(kBlue);
-        }
-        else fit->SetLineColor(kBlue+3);
+      
       }
       
       
       if (zz1>-3.15) {
              zf14=zf14+1;
-         Track_z_y->Fit("pol1");
-        TF1 *fit = Track_z_y->GetFunction("pol1");
-        if (zf14<250) {
-           fit->SetLineColor(kRed);
-        }
-        else if (zf14>500) {
-          fit->SetLineColor(kRed+3);
-        }
-        else fit->SetLineColor(kRed+2);
+      
       }
            
       if (zz1<-37.55&&zz2>-37.55) {
+        
+        
                  zf23=zf23+1;
-         
-          Track_z_y->Fit("pol1");
-          TF1 *fit = Track_z_y->GetFunction("pol1");
-         if (zf23<100) {
-            fit->SetLineColor(kGreen+1);
-         }
-        else if (zf23>500) {
-                 fit->SetLineColor(kGreen+3);
-               }
-         else fit->SetLineColor(kGreen+2);
       }
       
       
@@ -660,32 +650,11 @@ void mana(){
     }
   
   
-     Canvas->cd();
+    // Canvas->cd();
   //Track_z_y->Fit("pol1");
     //Track_z_y->SetMarkerStyle(20);
    // Track_z_y->SetLineColorAlpha(kRed,0.50);
-     Track_z_y->SetLineWidth(1);
-      if (DrawGraph==1&&g==4&&SkipEvent==0) {
-        Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
-        Track_z_y->SetMaximum(103);
-        Track_z_y->SetMinimum(-177);
-        Track_z_y->GetXaxis()->SetLimits(-377,377);
-        Track_z_y->Draw("AP");
-      }
-      else if(g==4&&SkipEvent==0) Track_z_y->Draw("same P");
-  
-   Canvas2->cd();
-
-       Track_x_y->SetMarkerStyle(20);
-       if (DrawGraph==1&&g==4&&SkipEvent==0) {
-         Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
-         Track_x_y->SetMaximum(87);
-         Track_x_y->SetMinimum(-87);
-         Track_x_y->GetXaxis()->SetLimits(-377,377);
-            Track_x_y->Draw("AP");
-       }
-       else if(g==4&&SkipEvent==0) Track_x_y->Draw("same P");
- 
+   
   
     
     
@@ -740,11 +709,280 @@ void mana(){
   cut.close();
   
   
-  Canvas->Print("lxplus/Track_z_ys.pdf");
-  Canvas2->Print("lxplus/Track_x_ys.pdf");
+  
+  TCanvas * Canvas = new TCanvas();
+  TCanvas * Canvas2 = new TCanvas();
+  
+  // Track_z_y->SetLineWidth(1);
+     
+  int notdrawZ=0,notdrawX=0;
+  
+  int TijRebin_X[8][8];
+  int TijRebin_Z[8][8];
+  
+  for (int m=0; m<16; m++) {
+    for (int n=0; n<16; n++) {
+      
+      
+      if (m<2){
+        
+        if (n<2) {
+            TijRebin_X[m][n]++;
+          TijRebin_Z[m][n]++;
+
+        }
+        
+       
+        
+      }
+      
+      if (m<4&&m>=2){
+           
+        if ((n<4&&n>=2)) {
+               TijRebin_X[m][n]++;
+                  TijRebin_Z[m][n]++;
+
+
+             }
+          }
+      
+      if (m<8&&m>=4){
+              
+        if ((n<8&&n>=4)) {
+                    TijRebin_X[m][n]++;
+                      TijRebin_Z[m][n]++;
+
+
+              }
+      }
+      
+      
+      if (m<10&&m>=8){
+              if ((n<16&&n>=12)) {
+                    TijRebin_X[m][n]++;
+                     TijRebin_Z[m][n]++;
+
+              }
+       }
+       
+      if (m<12&&m>=10){
+                 
+        if (n<12&&n>=10) {
+                       TijRebin_X[m][n]++;
+                         TijRebin_Z[m][n]++;
+
+                  }
+           }
+     
+      
+      if (m<14&&m>=12){
+                  
+        if (n<14&&n>=12) {
+                        TijRebin_X[m][n]++;
+                         TijRebin_Z[m][n]++;
+
+                  }
+           }
+      
+      if (m<16&&m>=14){
+                     
+        if (n<16&&n>=14){
+                           TijRebin_X[m][n]++;
+                            TijRebin_Z[m][n]++;
+
+                     }
+              }
+      
+    }
+  }
+  
+  for (int m=0; m<8; m++) {
+    for (int n=0; n<8; n++) {
+      
+      TGraph* Track_z_y = new TGraph(2);
+      TGraph* Track_x_y = new TGraph(2);
+     
+      double xx0 = (2*m)*10.8+(2*m-1)*0.02+5.4-86.55;
+        
+      double zz1 = (2*m)*10.8+(2*m-1)*0.02+5.4-86.55+15;
+               
+      
+      double xx3 = (2*n)*10.8+(2*n-1)*0.02+5.4-86.55;
+      
+      double zz2 = (2*n)*10.8+(2*n-1)*0.02+5.4-86.55-90;
+                              
+         
+          
+          if (TijRebin_Z[m][n]>10000000) {
+                
+                Track_z_y->SetPoint(0,ycor_plane1,zz1);
+                Track_z_y->SetPoint(1,ycor_plane2,zz2);
+                
+                Track_z_y->Fit("pol1");
+                
+                TF1 *fit = Track_z_y->GetFunction("pol1");
+                
+                fit->SetLineColor(kBlue+2);
+              
+                
+                }
+          
+        
+          else if (TijRebin_Z[m][n]>1000000&&TijRebin_Z[m][n]<10000000) {
+                 
+                 Track_z_y->SetPoint(0,ycor_plane1,zz1);
+                 Track_z_y->SetPoint(1,ycor_plane2,zz2);
+                 
+                 Track_z_y->Fit("pol1");
+                 
+                 TF1 *fit = Track_z_y->GetFunction("pol1");
+                 
+                 fit->SetLineColor(kBlue-7);
+               
+                 
+                 }
+          
+      
+          
+         else  if (TijRebin_Z[m][n]>10000&&TijRebin_Z[m][n]<1000000) {
+            
+            Track_z_y->SetPoint(0,ycor_plane1,zz1);
+            Track_z_y->SetPoint(1,ycor_plane2,zz2);
+            
+            Track_z_y->Fit("pol1");
+            
+            TF1 *fit = Track_z_y->GetFunction("pol1");
+            
+            fit->SetLineColor(kAzure+2);
+          
+            
+            }
+        
+          else if(TijRebin_Z[m][n]<10000&&TijRebin_Z[m][n]>0) {
+         
+          Track_z_y->SetPoint(0,ycor_plane1,zz1);
+            Track_z_y->SetPoint(1,ycor_plane2,zz2);
+            
+            Track_z_y->Fit("pol1");
+           TF1 *fit = Track_z_y->GetFunction("pol1");
+           fit->SetLineColor(kAzure-9);
+            
+       
+          }
+         
+          else {
+            
+            notdrawZ=1;
+          }
+          
+        
+          
+          if (TijRebin_X[m][n]>1000000) {
+              
+              Track_x_y->SetPoint(0,ycor_plane0,xx0);
+              Track_x_y->SetPoint(1,ycor_plane3,xx3);
+              Track_x_y->Fit("pol1");
+              TF1 *fit = Track_x_y->GetFunction("pol1");
+              fit->SetLineColor(kBlue+2);
+                   
+                   
+            }
+         
+          
+            
+       else if (TijRebin_X[m][n]>1000000&&TijRebin_X[m][n]<1000000) {
+             
+             Track_x_y->SetPoint(0,ycor_plane0,xx0);
+             Track_x_y->SetPoint(1,ycor_plane3,xx3);
+             Track_x_y->Fit("pol1");
+             TF1 *fit = Track_x_y->GetFunction("pol1");
+             fit->SetLineColor(kBlue-7);
+                  
+                  
+           }
+       
+          
+          
+      else  if (TijRebin_X[m][n]>10000&&TijRebin_X[m][n]<100000) {
+          
+          Track_x_y->SetPoint(0,ycor_plane0,xx0);
+          Track_x_y->SetPoint(1,ycor_plane3,xx3);
+          Track_x_y->Fit("pol1");
+          TF1 *fit = Track_x_y->GetFunction("pol1");
+          fit->SetLineColor(kAzure+2);
+               
+               
+        }
+       
+       
+        else if(TijRebin_X[m][n]<10000&&TijRebin_X[m][n]>0) {
+        
+          Track_x_y->SetPoint(0,ycor_plane0,xx0);
+          Track_x_y->SetPoint(1,ycor_plane3,xx3);
+          Track_x_y->Fit("pol1");
+          TF1 *fit = Track_x_y->GetFunction("pol1");
+          fit->SetLineColor(kAzure-9);
+          
+             
+        
+        }
+        
+          else {
+            
+            notdrawX=1;
+          }
+          
+      
+          if (n==0&&m==0) {
+           
+           Canvas->cd();
+            Track_z_y->SetTitle("Reconstructed Track projection  Z Y; y (cm); z (cm)");
+            Track_z_y->SetMaximum(100);
+            Track_z_y->SetMinimum(-200);
+            Track_z_y->GetXaxis()->SetLimits(-377,377);
+            Track_z_y->Draw("AP");
+
+            Canvas2->cd();
+            
+            Track_x_y->SetTitle("Reconstructed Track projection  X Y; y (cm); x (cm)");
+            Track_x_y->SetMaximum(87);
+            Track_x_y->SetMinimum(-87);
+            Track_x_y->GetXaxis()->SetLimits(-377,377);
+            Track_x_y->Draw("AP");
+          
+           
+                
+        
+            }
+        
+          else {
+            Canvas->cd();
+            Track_z_y->Draw("Same");
+            Canvas2->cd();
+            Track_x_y->Draw("Same");
+                       
+            
+            
+          }
+      
+      
+      
+    }
+  }
+      
+  
+  
+  Canvas->Print("local/Track_z_ys.pdf");
+  Canvas2->Print("local/Track_x_ys.pdf");
+  
+  
+  
+  
   
   double xxtot=xf12+xf14+xf23+xf34;
   double zztot=zf14+zf23+zf34;
+  
+  
   
   cout << "\nProjection X Y \nfraction of tracks 1->2 " << xf12/xxtot << "\nfraction of tracks 2->3 " << xf23/xxtot << "\nfraction of tracks 3->4 " << xf34/xxtot << "\nfraction of tracks 1->4 " << xf14/xxtot << endl;
   
@@ -799,7 +1037,7 @@ gStyle->SetGridStyle(3);
      plano_cut_hprof[3]->SetLineWidth(3);
   plano_cut_hprof[3]->Draw("E");
 
-    c1->Print("lxplus/tprofile.pdf");
+    c1->Print("local/tprofile.pdf");
   
   
 */
@@ -869,7 +1107,7 @@ gStyle->SetGridStyle(3);
   V_hist[1]->Fit(g7,"R");
   V_hist[1]->Fit(g8,"R+");
     
-  c2->Print("lxplus/Crt_adc_diff.pdf");
+  c2->Print("local/Crt_adc_diff.pdf");
  */
  /**************************************************/
  
@@ -882,7 +1120,7 @@ gStyle->SetGridStyle(3);
   c3->cd(2);
   plano23->Draw("COLZ");
 
-  c3->Print("lxplus/Crt_coincidencias_barras.pdf");
+  c3->Print("local/Crt_coincidencias_barras.pdf");
 
 
   /**************************************************/
@@ -890,7 +1128,7 @@ gStyle->SetGridStyle(3);
   
   TCanvas * c7 = new TCanvas();
   tof->Draw("hist");
-  c7->Print("lxplus/tof.pdf");
+  c7->Print("local/tof.pdf");
   
    /**************************************************/
 
@@ -903,7 +1141,7 @@ gStyle->SetGridStyle(3);
   c8->cd(3);
   disp23->Draw("hist");
   
-   c8->Print("lxplus/disp.pdf");
+   c8->Print("local/disp.pdf");
    
     /**************************************************/
   
@@ -930,7 +1168,7 @@ gStyle->SetGridStyle(3);
    legend1->AddEntry(V_bars_cut[3],"Cut","l");
    legend1->Draw();
   
-   c12->Print("lxplus/barswevents_precut.pdf");
+   c12->Print("local/barswevents_precut.pdf");
    
     /**************************************************/
   
@@ -946,7 +1184,7 @@ gStyle->SetGridStyle(3);
      c13->cd(4);
      V_delta_max[3]->Draw("hist");
   
-    c13->Print("lxplus/deltaSB.pdf");
+    c13->Print("local/deltaSB.pdf");
     
   /**************************************************/
   
@@ -962,7 +1200,7 @@ gStyle->SetGridStyle(3);
      c15->cd(4);
      V_delta_max_2[3]->Draw("COLZ");
   
-    c15->Print("lxplus/deltaSB_EnMAx.pdf");
+    c15->Print("local/deltaSB_EnMAx.pdf");
   
   
      /**************************************************/
@@ -983,14 +1221,14 @@ gStyle->SetGridStyle(3);
    legend->AddEntry(coor_costhetatof_m0,"TOF<0","l");
     legend->AddEntry(coor_costheta,"TOF>0","l");
     legend->Draw();
-   c9->Print("lxplus/costheta.pdf");
+   c9->Print("local/costheta.pdf");
    
   
    /**************************************************/
 
    TCanvas * c10 = new TCanvas();
    LvsTOF->Draw("COLZ");
-   c10->Print("lxplus/LVSTOF.pdf");
+   c10->Print("local/LVSTOF.pdf");
    
 
   
@@ -999,7 +1237,7 @@ gStyle->SetGridStyle(3);
 
    TCanvas * c11 = new TCanvas();
    costhetavsphi->Draw("COLZ");
-   c11->Print("lxplus/costhetavsphi.pdf");
+   c11->Print("local/costhetavsphi.pdf");
    
 
   
@@ -1008,7 +1246,7 @@ gStyle->SetGridStyle(3);
   
    TCanvas * c14 = new TCanvas();
    pmt->Draw("hist");
-   c14->Print("lxplus/pmt.pdf");
+   c14->Print("local/pmt.pdf");
    
 
   
@@ -1026,7 +1264,7 @@ gStyle->SetGridStyle(3);
   plano2W->Draw("COLZ");
   c31->cd(4);
   plano3W->Draw("COLZ");
-  c31->Print("lxplus/Crt_barras_weighted.pdf");
+  c31->Print("local/Crt_barras_weighted.pdf");
 
 */
 
@@ -1066,7 +1304,7 @@ gStyle->SetGridStyle(3);
   legend3->AddEntry(V_plano_tot_cut[3],"Plane 3","l");
      legend3->Draw();
   
-  c4->Print("lxplus/Crt_V_plano_tot_cut[0].pdf");
+  c4->Print("local/Crt_V_plano_tot_cut[0].pdf");
 
  
  
@@ -1085,7 +1323,24 @@ gStyle->SetGridStyle(3);
     V_1maxvs2max[2]->Draw("COLZ");
    c5->cd(4);
     V_1maxvs2max[3]->Draw("COLZ");
-   c5->Print("lxplus/1stmaxvs2ndmax.pdf");
+   c5->Print("local/1stmaxvs2ndmax.pdf");
+
+   /**************************************************/
+  
+   TCanvas * c18 = new TCanvas();
+    
+    gStyle->SetOptStat(0);
+    c18->Divide(2,2);
+    c18->cd(1);
+    V_dif_sum[0]->Draw("COLZ");
+    c18->cd(2);
+     V_dif_sum[1]->Draw("COLZ");
+    c18->cd(3);
+     V_dif_sum[2]->Draw("COLZ");
+    c18->cd(4);
+    V_dif_sum[3]->Draw("COLZ");
+    c18->Print("local/V_dif_sum.pdf");
+
 
 
 
