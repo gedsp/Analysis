@@ -285,12 +285,12 @@ void mana(){
 
   //costheta
   
-  TH1F* coor_spherical = new TH1F("theta", "theta",  25,60,100);
+  TH1F* coor_spherical = new TH1F("theta", "theta",  25,60,150);
   coor_spherical->SetTitle("Distribuition #theta; #theta; # events");
-  TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  100,-1,1);
+  TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  100,-0.6,0.6);
   coor_costheta->SetTitle("Distribuition cos(#theta); cos(#theta); # events");
-  TH1F* coor_spherical_tof_m0 = new TH1F("theta2", "theta2",  25,60,100);
-  TH1F* coor_costhetatof_m0 = new TH1F("costheta2", "TCostheta2",  100,-1,1);
+  TH1F* coor_spherical_tof_m0 = new TH1F("theta2", "theta2",  25,60,150);
+  TH1F* coor_costhetatof_m0 = new TH1F("costheta2", "TCostheta2",  100,-0.6,0.6);
 
   
   
