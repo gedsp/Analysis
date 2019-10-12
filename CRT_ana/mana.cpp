@@ -476,7 +476,7 @@ void mana(){
       }
       
       
-      if(dif<1500.){
+      if(dif<2000.){
         
         SkipEvent++;
       }
