@@ -293,12 +293,12 @@ void mana(){
 
   //costheta
   
-  TH1F* coor_spherical = new TH1F("theta", "theta",  25,60,150);
+  TH1F* coor_spherical = new TH1F("theta", "theta",  25,60,120);
   coor_spherical->SetTitle("Distribuition #theta; #theta; # events");
-  TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  100,-0.6,0.6);
+  TH1F* coor_costheta = new TH1F("costheta", "TCostheta",  50,-0.6,0.6);
   coor_costheta->SetTitle("Distribuition cos(#theta); cos(#theta); # events");
-  TH1F* coor_spherical_tof_m0 = new TH1F("theta2", "theta2",  25,60,150);
-  TH1F* coor_costhetatof_m0 = new TH1F("costheta2", "TCostheta2",  100,-0.6,0.6);
+  TH1F* coor_spherical_tof_m0 = new TH1F("theta2", "theta2",  25,60,120);
+  TH1F* coor_costhetatof_m0 = new TH1F("costheta2", "TCostheta2",  50,-0.6,0.6);
 
   
   
@@ -1215,12 +1215,30 @@ gStyle->SetGridStyle(3);
   coor_costheta->Draw("hist");
   coor_costhetatof_m0->SetLineColor(kRed);
  coor_costhetatof_m0->Draw("same hist");
+  
+  double integralW90TOFM0 = coor_spherical->Integral(65,120);
+  double integralW90TOFm0 = coor_spherical_tof_m0->Integral(60,120);
+  
+  double integralWOUT90TOFm0 = coor_spherical_tof_m0->Integral(92.4,120);
+  
+  double integralJUST90TOFm0=coor_spherical_tof_m0->Integral(87.6,92.4);
+  
+  
+  
+  
+  
    auto legend = new TLegend(0.1,0.7,0.48,0.9);
    legend->AddEntry(coor_costhetatof_m0,"TOF<0","l");
     legend->AddEntry(coor_costheta,"TOF>0","l");
     legend->Draw();
    c9->Print("lxplus/costheta.pdf");
    
+  cout <<  "integral W 90 TOF M 0 " <<  integralW90TOFM0 << endl;
+  cout <<  "integral W 90 TOF m 0 " <<  integralW90TOFm0 << endl;
+   cout <<  "integral WOUT 90 TOF m 0 " <<  integralWOUT90TOFm0 << endl;
+   cout <<  "integral JUST 90 TOF m 0 " <<  integralJUST90TOFm0 << endl;
+  
+  cout << " ratio  " << integralWOUT90TOFm0/ (integralJUST90TOFm0+integralW90TOFM0) << endl;
   
    /**************************************************/
 
