@@ -1228,7 +1228,7 @@ gStyle->SetGridStyle(3);
  // int binNf4= coor_spherical_tof_m0->FindBin(120);
   
   
-  double integralW90TOFM0 = coor_spherical->Integral(binNi,binNi);
+  double integralW90TOFM0 = coor_spherical->Integral(binNi,binNf);
   double integralW90TOFm0 = coor_spherical_tof_m0->Integral(binNi2,binNf2);
   
   double integralWOUT90TOFm0 = coor_spherical_tof_m0->Integral(binNi3,binNf2);
