@@ -1219,10 +1219,11 @@ gStyle->SetGridStyle(3);
   
   int binNi= coor_spherical->FindBin(65);
   int binNf= coor_spherical->FindBin(120);
+  
   int binNi2= coor_spherical_tof_m0->FindBin(65);
   int binNf2= coor_spherical_tof_m0->FindBin(120);
   
-  int binNi3= coor_spherical_tof_m0->FindBin(92.4);
+  int binNi3= coor_spherical_tof_m0->FindBin(90);
 //7  int binNf3= coor_spherical_tof_m0->FindBin(120);
   int binNi4= coor_spherical_tof_m0->FindBin(87.6);
  // int binNf4= coor_spherical_tof_m0->FindBin(120);
@@ -1233,7 +1234,7 @@ gStyle->SetGridStyle(3);
   
   double integralWOUT90TOFm0 = coor_spherical_tof_m0->Integral(binNi3,binNf2);
   
-  double integralJUST90TOFm0=coor_spherical_tof_m0->Integral(binNi4,binNi3);
+  double integralJUST90TOFm0=coor_spherical_tof_m0->Integral(binNi2,binNi3);
   
   
   
