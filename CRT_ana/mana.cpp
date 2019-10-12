@@ -1216,12 +1216,24 @@ gStyle->SetGridStyle(3);
   coor_costhetatof_m0->SetLineColor(kRed);
  coor_costhetatof_m0->Draw("same hist");
   
-  double integralW90TOFM0 = coor_spherical->Integral(65,120);
-  double integralW90TOFm0 = coor_spherical_tof_m0->Integral(60,120);
   
-  double integralWOUT90TOFm0 = coor_spherical_tof_m0->Integral(92.4,120);
+  int binNi= coor_spherical->FindBin(65);
+  int binNf= coor_spherical->FindBin(120);
+  int binNi2= coor_spherical_tof_m0->FindBin(65);
+  int binNf2= coor_spherical_tof_m0->FindBin(120);
   
-  double integralJUST90TOFm0=coor_spherical_tof_m0->Integral(87.6,92.4);
+  int binNi3= coor_spherical_tof_m0->FindBin(92.4);
+//7  int binNf3= coor_spherical_tof_m0->FindBin(120);
+  int binNi4= coor_spherical_tof_m0->FindBin(87.6);
+ // int binNf4= coor_spherical_tof_m0->FindBin(120);
+  
+  
+  double integralW90TOFM0 = coor_spherical->Integral(binNi,binNi);
+  double integralW90TOFm0 = coor_spherical_tof_m0->Integral(binNi2,binNf2);
+  
+  double integralWOUT90TOFm0 = coor_spherical_tof_m0->Integral(binNi3,binNf2);
+  
+  double integralJUST90TOFm0=coor_spherical_tof_m0->Integral(binNi4,binNi3);
   
   
   
