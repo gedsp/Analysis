@@ -410,7 +410,7 @@ void mana(){
             {
               f++;
                V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
-              if (k==0&&j==4&&) {
+              if (k==0&&j==4) {
                         p0TEST->Fill(crt_adc[k][j]+crt_adc[k][j+1]);
                       }
             }
