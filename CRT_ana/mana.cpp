@@ -389,9 +389,7 @@ void mana(){
            int b=j/2;
           
           
-          if (k==0&&j==4) {
-            p0TEST->Fill(crt_adc[k][j]+crt_adc[k][j+1]);
-          }
+        
           
           
           if(crt_adc[k][j]==max_threshold_PM||crt_adc[k][j+1]==max_threshold_PM){ //upper cut
@@ -412,6 +410,9 @@ void mana(){
             {
               f++;
                V_plano_tot_cut[k]->Fill(PlaneSignalTot[k][b]);
+              if (k==0&&j==4&&) {
+                        p0TEST->Fill(crt_adc[k][j]+crt_adc[k][j+1]);
+                      }
             }
             
              if (f!=0) {
@@ -1383,7 +1384,7 @@ gStyle->SetGridStyle(3);
    /**************************************************/
   TCanvas * ct= new TCanvas();
   p0TEST->Draw("hist");
-  ct->Print("lxplus/pano0testebarra2.pdf");
+  ct->Print("lxplus/pano0testebarra2_semnoise.pdf");
   
 
 }
